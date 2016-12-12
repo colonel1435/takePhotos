@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">SignalInspect</string>
+    <string name="action_settings">Settings</string>
+    <string name="app_title">信号巡检拍照系统</string>
+    <string name="depot_title">请填写以下信息</string>
+    <string name="depot_new">添加</string>
+    <string name="depot_cancle">取消</string>
+    <string name="depot_add">添加</string>
+    <string name="depot_name">段名</string>
+    <string name="depot_name_hint">请输入段名</string>
+    <string name="dc_num">道岔数量</string>
+    <string name="dc_num_hint">请输入转折机数量</string>
+    <string name="dc_item_max">转折机最大数量</string>
+    <string name="dc_item_max_hint">请输入转折机最大数量</string>
+    <string name="dc_num_title">道岔总数: </string>
+    <string name="dc_set_position">定位</string>
+    <string name="dc_back_position">返位</string>
+    <string name="title_activity_main2">Main2Activity</string>
+</resources>

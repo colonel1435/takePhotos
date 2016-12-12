@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_depot_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dialog_depot_top_margin"
+        android:textSize="@dimen/title_size"
+        android:text="@string/depot_title"/>
+
+    <LinearLayout
+        android:id="@+id/layout_depot_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialog_depot_top_margin"
+        android:layout_marginLeft="@dimen/dialog_depot_left_margin"
+        android:layout_marginRight="@dimen/dialog_depot_right_margin"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tv_depot_title">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/depot_name"/>
+        <EditText
+            android:id="@+id/et_depot_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:inputType="text"
+            android:hint="@string/depot_name_hint"
+            android:layout_alignParentLeft="true"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_dc_num"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialog_depot_top_margin"
+        android:layout_marginLeft="@dimen/dialog_depot_left_margin"
+        android:layout_marginRight="@dimen/dialog_depot_right_margin"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/layout_depot_name">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/dc_num"/>
+
+        <EditText
+            android:id="@+id/et_dc_num"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:inputType="number"
+            android:hint="@string/dc_num_hint"
+            android:layout_alignParentLeft="true"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layout_dc_max"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialog_depot_top_margin"
+        android:layout_marginLeft="@dimen/dialog_depot_left_margin"
+        android:layout_marginRight="@dimen/dialog_depot_right_margin"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/layout_dc_num">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/dc_item_max"/>
+
+        <EditText
+            android:id="@+id/et_dc_item_max"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:inputType="number"
+            android:hint="@string/dc_item_max_hint"
+            android:layout_alignParentLeft="true"/>
+    </LinearLayout>
+</RelativeLayout>
