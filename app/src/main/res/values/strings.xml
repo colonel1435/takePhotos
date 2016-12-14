@@ -9,11 +9,12 @@
     <string name="depot_name">段名</string>
     <string name="depot_name_hint">请输入段名</string>
     <string name="dc_num">道岔数量</string>
-    <string name="dc_num_hint">请输入转折机数量</string>
+    <string name="dc_num_hint">请输入道岔数量</string>
     <string name="dc_item_max">转折机最大数量</string>
     <string name="dc_item_max_hint">请输入转折机最大数量</string>
     <string name="dc_num_title">道岔总数: </string>
     <string name="dc_set_position">定位</string>
     <string name="dc_back_position">返位</string>
-    <string name="title_activity_main2">Main2Activity</string>
+    <string name="dc_name_suffix">道岔</string>
+    <string name="dc_name_postfix">机</string>
 </resources>

@@ -5,6 +5,7 @@
     <dimen name="fab_margin">20dp</dimen>
     <dimen name="title_size">16sp</dimen>
     <dimen name="edit_size">12sp</dimen>
+    <dimen name="dc_title_size">18sp</dimen>
     <dimen name="dialog_depot_top_margin">10dp</dimen>
     <dimen name="dialog_depot_bottom_margin">10dp</dimen>
     <dimen name="dialog_depot_left_margin">30dp</dimen>

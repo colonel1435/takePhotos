@@ -4,17 +4,26 @@
     android:id="@+id/activity_depot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="com.sunland.signalinspect.DepotActivity">
 
-    <LinearLayout
-        android:id="@+id/ll_dc_item"
+
+    <TextView
+        android:id="@+id/tv_dc_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:textAlignment="center"/>
+
+    <LinearLayout
+        android:id="@+id/listview_dc_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_dc_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 
 </LinearLayout>

@@ -7,6 +7,10 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +18,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.sunland.utils.MyDCRecyclerAdapter;
+import com.sunland.utils.MyDividerItemDecoration;
+import com.sunland.utils.MyGridDividerItemDecoration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,17 +31,20 @@ public class DepotActivity extends AppCompatActivity {
 
     public static final String DEPOT_KEY = "depot";
     public static final String DC_KEY   = "dc";
+    public static final String DC_ITEM_MAX_KEY = "max";
     private static final int TAKE_PHOTOS = 0;
     private static final String TAG = "wumin";
     public static final String ZOOM_PHOTO_KEY = "ZOOM";
     public static String imgName = null;
     private Context mContext = null;
     private String depot = null;
-    private String dc_num = null;
-    private TextView mMsg;
-    private Button mSetPosition;
-    private Button mBackPosition;
+    private int dc_num;
+    private int dc_item_max;
+    private TextView mTitle;
     private LinearLayout mLayout;
+    private RecyclerView mRecyclerView;
+    private MyDCRecyclerAdapter myDCRecyclerAdapter;
+    List<String> mData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,56 +53,51 @@ public class DepotActivity extends AppCompatActivity {
         mContext = this;
         Bundle bundle = getIntent().getExtras();
         depot = bundle.getString(DEPOT_KEY);
-        dc_num = bundle.getString(DC_KEY);
-//        dc_num = Integer.parseInt(bundle.getString(DC_KEY));
+        dc_num = Integer.parseInt(bundle.getString(DC_KEY).split(":")[1]);
+        dc_item_max = bundle.getInt(DC_ITEM_MAX_KEY);
 
         initView();
     }
 
     private void initView() {
-        String msg = depot + " -> " + dc_num;
-        Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+//        String msg = depot + " -> " + dc_num;
+//        Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
 
         imgName = Environment.getExternalStorageDirectory().toString() + "/test" + ".jpg";
-        Log.i(TAG, "IMAGE " + imgName);
+        mTitle = (TextView)findViewById(R.id.tv_dc_title);
+        mTitle.setText(depot);
+        mLayout = (LinearLayout) findViewById(R.id.listview_dc_item);
+        mRecyclerView = (RecyclerView)this.findViewById(R.id.recyclerview_dc_item);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 1));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//        mRecyclerView.addItemDecoration(new MyDividerItemDecoration(mContext, MyDividerItemDecoration.VERTICAL_LIST));
+        mRecyclerView.addItemDecoration(new MyGridDividerItemDecoration(mContext));
+        mRecyclerView.setHasFixedSize(true);
+        mData = getData();
+        myDCRecyclerAdapter = new MyDCRecyclerAdapter(mData);
+        mRecyclerView.setAdapter(myDCRecyclerAdapter);
 
-        mLayout = (LinearLayout)findViewById(R.id.ll_dc_item);
+    }
+
+    public List<String> getData() {
+        String dc_name;
         List<String> list = new ArrayList<>();
-        list.add("道岔1");
-        list.add("道岔2");
-        list.add("道岔3");
-        list.add("道岔4");
-
-        createContentView(mContext, mLayout, list);
+        for(int i = 1; i < dc_num+1; i++ ) {
+            for(int j = 1; j < dc_item_max+1; j++) {
+                dc_name = i + "#";
+                dc_name += j + getString(R.string.dc_name_postfix);
+                list.add(dc_name);
+            }
+        }
+        return list;
     }
 
-
-    public void  createContentView(Context context, LinearLayout contentLayout, List<String> dcItem) {
-
-        View childView;
-        TextView mDc;
-        LayoutInflater layoutInflater = LayoutInflater.from (context);
-
-        for  ( int  i = 0; i < dcItem.size(); i++) {
-            childView  = layoutInflater.inflate(R.layout.dc_item, null);
-            mDc = (TextView)childView.findViewById(R.id.tv_dc_name);
-            mDc.setText(dcItem.get(i));
-            mSetPosition = (Button)childView.findViewById(R.id.dc_set_position);
-            mBackPosition = (Button)childView.findViewById(R.id.dc_back_position);
-            mSetPosition.setOnClickListener(mClickListener);
-            mBackPosition.setOnClickListener(mClickListener);
-            contentLayout.addView(childView);
-        }
+    public void onBtClick(View v) {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(imgName)));
+        startActivityForResult(intent, TAKE_PHOTOS);
     }
 
-    private View.OnClickListener mClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(imgName)));
-            startActivityForResult(intent, TAKE_PHOTOS);
-        }
-    };
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
