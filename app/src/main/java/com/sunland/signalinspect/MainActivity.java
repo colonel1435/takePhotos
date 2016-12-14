@@ -58,23 +58,6 @@ public class MainActivity extends AppCompatActivity {
         initView();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     void initView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_depot) ;
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));

@@ -18,6 +18,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -253,6 +255,41 @@ public class DepotActivity extends AppCompatActivity {
                 .create().show();
     }
 
+    private void showFileBrowser() {
+        Toast.makeText(mContext, "浏览文件", Toast.LENGTH_LONG).show();
+        Uri uri = Uri.fromFile(new File(imgDir));
+        Intent intent = new Intent();
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+//        intent.setAction(Intent.ACTION_PICK);
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setDataAndType(uri, "image/*");
+        startActivity(intent);
+    }
+
+    private void showFileSearch() {
+        Toast.makeText(mContext, "查找文件", Toast.LENGTH_LONG).show();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_search:
+                showFileSearch();
+                return true;
+            case R.id.action_browse:
+                showFileBrowser();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
