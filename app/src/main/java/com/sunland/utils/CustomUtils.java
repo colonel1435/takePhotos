@@ -12,4 +12,14 @@ public class CustomUtils {
         String now = sDateFormat.format(new Date());
         return now;
     }
+
+    public static String delStr(String src, String delStr) {
+            int postion = src.indexOf(delStr);
+            int lenSrc = src.length();
+            int lenDel = delStr.length();
+            String newString = src.substring(0,postion) + src.substring(postion + lenDel, lenSrc);
+
+            return newString;
+        }
+
 }

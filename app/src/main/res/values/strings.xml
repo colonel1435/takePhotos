@@ -17,4 +17,17 @@
     <string name="dc_back_position">返位</string>
     <string name="dc_name_suffix">道岔</string>
     <string name="dc_name_postfix">机</string>
+    <string name="dc_other_photos">其他照片</string>
+    <string name="dc_id">道岔号</string>
+    <string name="dc_position">位置</string>
+    <string name="dc_misc">Misc</string>
+    <string name="other_photo">照片名称</string>
+    <string name="other_photo_msg">请输入照片名称</string>
+    <string name="notification_msg_title">温馨提示</string>
+    <string name="msg_ok">确定</string>
+    <string name="msg_photo_null">请输入照片名称</string>
+    <string name="msg_depot_null">请输入站名</string>
+    <string name="msg_dc_null">请输入道岔数量</string>
+    <string name="msg_item_null">请输入最大转折机数量</string>
+    <string name="msg_depot_again">该站已存在，请确认后再试</string>
 </resources>

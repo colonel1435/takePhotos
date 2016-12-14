@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_depot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,18 +13,72 @@
         android:id="@+id/tv_dc_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialog_depot_top_margin"
+        android:layout_marginBottom="@dimen/dialog_depot_bottom_margin"
+        android:textSize="@dimen/depot_title_size"
         android:textAlignment="center"/>
 
-    <LinearLayout
-        android:id="@+id/listview_dc_item"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview_dc_item"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dialog_depot_left_margin"
+        android:layout_marginRight="@dimen/dialog_depot_right_margin"
+        app:cardBackgroundColor="@color/colorLightGrey">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:text="@string/dc_id"
+                android:textSize="@dimen/dc_item_title_size"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorWhite"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="7"
+                android:gravity="center"
+                android:text="@string/dc_position"
+                android:textSize="@dimen/dc_item_title_size"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+    <ScrollView
+        android:id="@+id/scrollView_dc"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/dialog_depot_left_margin"
+        android:layout_marginRight="@dimen/dialog_depot_right_margin">
+        <LinearLayout
+            android:id="@+id/listview_dc_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-        </android.support.v7.widget.RecyclerView>
-    </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_dc_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+            </android.support.v7.widget.RecyclerView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/colorLightGrey">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:text="@string/dc_other_photos"
+                    android:onClick="onBtDefaultClick"/>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
 
 </LinearLayout>

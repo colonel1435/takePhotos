@@ -1,6 +1,7 @@
 package com.sunland.utils;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import java.util.Map;
  */
 public class MyDCRecyclerAdapter extends RecyclerView.Adapter<MyDCRecyclerAdapter.ViewHolder> {
 
+    private static final String TAG = "wumin";
     private List<String> mListDatas = null;
     private OnItemClickListener mListener;
     public interface OnItemClickListener {
@@ -83,6 +85,8 @@ public class MyDCRecyclerAdapter extends RecyclerView.Adapter<MyDCRecyclerAdapte
         public void bindData(String item) {
             if (item != null) {
                 mDC.setText(item);
+                btSetPosition.setTag(item);
+                btBackPosition.setTag(item);
             }
         }
     }

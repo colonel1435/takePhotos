@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,8 +21,12 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import com.sunland.utils.CustomUtils;
 import com.sunland.utils.MyDepotRecyclerAdapter;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -111,57 +116,32 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-//            int fromPosition = viewHolder.getAdapterPosition();
-//            int toPosition = target.getAdapterPosition();
-//            if (fromPosition < toPosition) {
-//                for(int i = fromPosition; i < toPosition; i++) {
-//                    Collections.swap(mData, i, i+1);
-//                }
-//            }else {
-//                for(int i = fromPosition; i > toPosition; i--) {
-//                    Collections.swap(mData, i, i -1);
-//                }
-//            }
-//            myRecyclerAdapter.notifyItemMoved(fromPosition, toPosition);
             return false;
-        }
-
-        @Override
-        public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-//            if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-//                viewHolder.itemView.setBackgroundColor(Color.LTGRAY);
-//            }
-            super.onSelectedChanged(viewHolder, actionState);
-        }
-
-        @Override
-        public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            super.clearView(recyclerView, viewHolder);
-//            viewHolder.itemView.setBackgroundColor(0);
         }
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
             int position = viewHolder.getAdapterPosition();
             myRecyclerAdapter.notifyItemRemoved(position);
+            DepotInfo item = mData.get(position);
             mData.remove(position);
 
-//            LinearLayoutManager manager = new LinearLayoutManager(mContext);
-//            manager.findViewByPosition(position);
-//            DepotInfo item = manager.get
-            DepotInfo item = mData.get(position);
             String depot = item.getDepot();
             SharedPreferences sp = getSharedPreferences(DEPOT_LIST, MODE_PRIVATE);
             SharedPreferences.Editor editor =sp.edit();
-            editor.remove(depot);
-            editor.commit();
+            editor.remove(depot).commit();
 
-//            /** 删除SharedPreferences文件 **/
-//            File file = new File(DATA_URL + getPackageName().toString()
-//                    + "/shared_prefs", depot + ".xml");
-//            if (file.exists()) {
-//                file.delete();
-//            }
+            File file = new File(Environment.getDataDirectory() + getPackageName().toString()
+                    + "/shared_prefs", depot + ".xml");
+            if (file.exists()) {
+                file.delete();
+            }
+
+            File depotFile = new File(Environment.getDataDirectory() + getPackageName().toString()
+                    + "/shared_prefs", depot + "_" + DepotActivity.DC_LIST + ".xml");
+            if (depotFile.exists()) {
+                depotFile.delete();
+            }
 
         }
     };
@@ -220,7 +200,25 @@ public class MainActivity extends AppCompatActivity {
                         String depotName = etDepot.getText().toString();
                         String dcNum = etDcNum.getText().toString();
                         String dcItemMax = etDcItemMax.getText().toString();
+
+                        if (depotName.length() == 0) {
+                            Toast.makeText(mContext, getString(R.string.msg_depot_null), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        if (dcNum.length() == 0) {
+                            Toast.makeText(mContext, getString(R.string.msg_dc_null), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        if (dcItemMax.length() == 0) {
+                            Toast.makeText(mContext, getString(R.string.msg_item_null), Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         SharedPreferences spList = getSharedPreferences(DEPOT_LIST, MODE_PRIVATE);
+                        int tmp = spList.getInt(depotName, 0);
+                        if(tmp != 0) {
+                            Toast.makeText(mContext, getString(R.string.msg_depot_again), Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         SharedPreferences.Editor editorList = spList.edit();
                         editorList.putInt(depotName, Integer.parseInt(dcNum));
                         editorList.commit();
