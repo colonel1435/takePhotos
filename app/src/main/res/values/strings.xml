@@ -39,4 +39,9 @@
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="search_null">该搜索结果不存在，请重试</string>
+    <string name="history_button">清空搜索历史</string>
+    <string name="history_title">历史记录</string>
+    <string name="history_msg">历史记录已清空</string>
 </resources>

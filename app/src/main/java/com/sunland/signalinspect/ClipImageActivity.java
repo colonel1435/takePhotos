@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.sunland.view.ClipImageLayout;
 import java.io.ByteArrayOutputStream;
@@ -21,6 +20,7 @@ public class ClipImageActivity extends AppCompatActivity {
     private static final String TAG = "wumin";
     Button btSave = null;
     ClipImageLayout mClipLayout = null;
+    private static final int CLIP_RECT_PADDING = 50;
     public static String ACTION_SAVE_IMG = "com.sunland.signalinspect.action.SAVA_IMG";
     public static String PHOTONAME_KEY = "PHOTO_NAME";
     public static String PHOTOFILE_KEY = "PHOTO_FILE";
@@ -44,6 +44,7 @@ public class ClipImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_clip_image);
 
         mClipLayout = (ClipImageLayout) findViewById(R.id.layout_clip_image);
+        mClipLayout.setHorizontalPadding(CLIP_RECT_PADDING);
         btSave = (Button) findViewById(R.id.bt_save_img);
         btSave.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -17,6 +17,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -95,6 +96,12 @@ public class DepotActivity extends AppCompatActivity implements MediaScannerConn
     }
 
     private void initView() {
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_depot_bar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         imgDir = Environment.getExternalStorageDirectory().toString() + WORK_DIR;
         File dir = new File(imgDir);
         if (!dir.exists()) {
@@ -338,6 +345,9 @@ public class DepotActivity extends AppCompatActivity implements MediaScannerConn
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case android.R.id.home:
+                finish();
+                break;
             case R.id.action_search:
                 showFileSearch();
                 return true;

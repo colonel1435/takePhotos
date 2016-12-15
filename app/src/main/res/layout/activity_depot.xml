@@ -9,6 +9,29 @@
     tools:context="com.sunland.signalinspect.DepotActivity">
 
 
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/activity_depot_bar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/title_size"
+                android:text="@string/app_title"/>
+        </RelativeLayout>
+    </android.support.design.widget.AppBarLayout>
     <TextView
         android:id="@+id/tv_dc_title"
         android:layout_width="match_parent"
