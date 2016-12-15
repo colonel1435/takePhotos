@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
 import com.sunland.view.ClipImageLayout;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -19,14 +21,26 @@ public class ClipImageActivity extends AppCompatActivity {
     private static final String TAG = "wumin";
     Button btSave = null;
     ClipImageLayout mClipLayout = null;
-    public static String imgDir;
+    public static String ACTION_SAVE_IMG = "com.sunland.signalinspect.action.SAVA_IMG";
+    public static String PHOTONAME_KEY = "PHOTO_NAME";
+    public static String PHOTOFILE_KEY = "PHOTO_FILE";
+    public static String PHOTODB_KEY = "PHOTO_DB";
+    public static String DEPOT_KEY = "DEPOT";
+    public static String imgDir = "";
+    private static String photoName = "";
+    private static String mDepot = "";
+    public static String photoFile = "";
+    private static String dbDir = "";
+    private static final String DB_POSTFIX = ".db";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        imgDir = bundle.getString(DepotActivity.ZOOM_PHOTO_KEY);
+        photoFile = bundle.getString(PHOTOFILE_KEY);
+        mDepot = bundle.getString(DEPOT_KEY);
+        photoName = bundle.getString(PHOTONAME_KEY);
         setContentView(R.layout.activity_clip_image);
 
         mClipLayout = (ClipImageLayout) findViewById(R.id.layout_clip_image);
@@ -35,7 +49,7 @@ public class ClipImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Bitmap bitmap = mClipLayout.clip();
-                File file = new File(imgDir);
+                File file = new File(photoFile);
                 if (file.exists())
                     file.delete();
                 byte[] bytes = compressImageByQuatity(bitmap);
@@ -50,8 +64,18 @@ public class ClipImageActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                Intent intent = new Intent(ClipImageActivity.this, showImageActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(ClipImageActivity.this, showImageActivity.class);
+//                startActivity(intent);
+                dbDir = DepotActivity.imgDir + mDepot + DB_POSTFIX;
+
+                Intent saveImg = new Intent();
+                saveImg.setAction(ACTION_SAVE_IMG);
+                saveImg.putExtra(PHOTONAME_KEY, photoName);
+                saveImg.putExtra(PHOTOFILE_KEY, photoFile);
+                saveImg.putExtra(PHOTODB_KEY, dbDir);
+                Log.i(TAG, "Photo name -> " + photoName + " Photo file -> " + photoFile + " DB ->" + dbDir);
+                startService(saveImg);
+                ClipImageActivity.this.finish();
             }
         });
     }
@@ -70,4 +94,5 @@ public class ClipImageActivity extends AppCompatActivity {
 //        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);
         return baos.toByteArray();
     }
+
 }

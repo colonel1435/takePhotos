@@ -34,7 +34,7 @@ public class ClipImageLayout extends RelativeLayout
 				android.view.ViewGroup.LayoutParams.MATCH_PARENT,
 				android.view.ViewGroup.LayoutParams.MATCH_PARENT);
 
-		Bitmap bmp = BitmapFactory.decodeFile(ClipImageActivity.imgDir);
+		Bitmap bmp = BitmapFactory.decodeFile(ClipImageActivity.photoFile);
 		mZoomImageView.setImageBitmap(bmp);
 //		mZoomImageView.setScaleType(ImageView.ScaleType.FIT_XY);
 //		mZoomImageView.setImageDrawable(getResources().getDrawable(R.drawable.bg));

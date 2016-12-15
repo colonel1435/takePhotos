@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SignalInspect</string>
+    <string name="app_name">巡检拍照</string>
     <string name="action_settings">Settings</string>
     <string name="app_title">信号巡检拍照系统</string>
     <string name="depot_title">请填写以下信息</string>
@@ -32,4 +32,11 @@
     <string name="msg_depot_again">该站已存在，请确认后再试</string>
     <string name="menu_browse">浏览</string>
     <string name="menu_search">查找</string>
+    <string name="save_finished">数据采集已完成</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

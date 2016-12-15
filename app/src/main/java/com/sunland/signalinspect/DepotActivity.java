@@ -5,9 +5,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.Inflater;
 
-public class DepotActivity extends AppCompatActivity {
+public class DepotActivity extends AppCompatActivity implements MediaScannerConnection.MediaScannerConnectionClient{
 
     public static final String WORK_DIR = "/signalInspect/";
     private static final String DATE_FORMAT_STR = "yyMMddHHmm";
@@ -57,11 +59,14 @@ public class DepotActivity extends AppCompatActivity {
     public static final String DC_LIST = "dc_item";
     private static final int DC_PHOTO_TYPE = 0;
     private static final int OTHER_PHOTO_TYPE = 1;
+    private static final String FILE_TYPE = "image/*";
+    private static String SCAN_PATH = "";
 
     public static String imgName = "";
     public static String imgDir = "";
-    private Context mContext = null;
-    private String depot = null;
+    private static String fileName = "";
+    private static Context mContext = null;
+    private static String depot = null;
     private int dc_num;
     private int dc_item_max;
     private TextView mTitle;
@@ -72,6 +77,9 @@ public class DepotActivity extends AppCompatActivity {
     private MyDCRecyclerAdapter myDCRecyclerAdapter;
     private ItemTouchHelper mItemTouchHelper;
     List<String> mData;
+
+    private MediaScannerConnection conn;
+    public String[] allFiles;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,10 +201,10 @@ public class DepotActivity extends AppCompatActivity {
         String jpgName = "";
         switch (type) {
             case DC_PHOTO_TYPE:
-                jpgName = imgDir + depot + "_" + DC_KEY + "_" + val + "_"  + status + "_" + now + ".jpg";
+                jpgName = depot + "_" + DC_KEY + "_" + val + "_"  + status + "_" + now + ".jpg";
                 break;
             case OTHER_PHOTO_TYPE:
-                jpgName = imgDir + depot + "_"  + val + "_"  + status + "_" + now + ".jpg";
+                jpgName = depot + "_"  + val + "_"  + status + "_" + now + ".jpg";
                 break;
             default:
                 break;
@@ -206,21 +214,21 @@ public class DepotActivity extends AppCompatActivity {
     }
     public void onBtSetPositionClick(View view) {
         String dc = view.getTag().toString();
-        String fileName = createPhotoName(DC_PHOTO_TYPE, dc, getString(R.string.dc_set_position));
-        imgName = fileName;
-        Log.i(TAG, "File -> " + imgName);
+        fileName = createPhotoName(DC_PHOTO_TYPE, dc, getString(R.string.dc_set_position));
+        imgName = imgDir + fileName;
+        Log.i(TAG, "File -> " + fileName);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(imgName)));
         startActivityForResult(intent, TAKE_PHOTOS);
     }
 
     public void onBtBackPositionClick(View view) {
         String dc = (String)view.getTag().toString();
-        String fileName = createPhotoName(DC_PHOTO_TYPE, dc, getString(R.string.dc_back_position));
-        imgName = fileName;
-        Log.i(TAG, "File -> " + imgName);
+        fileName = createPhotoName(DC_PHOTO_TYPE, dc, getString(R.string.dc_back_position));
+        imgName = imgDir + fileName;
+        Log.i(TAG, "File -> " + fileName);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(imgName)));
         startActivityForResult(intent, TAKE_PHOTOS);
     }
 
@@ -245,7 +253,7 @@ public class DepotActivity extends AppCompatActivity {
                             return;
                         }
                         String fileName = createPhotoName(OTHER_PHOTO_TYPE, val, getString(R.string.dc_misc));
-                        imgName = fileName;
+                        imgName = imgDir + fileName;
                         Log.i(TAG, "Val -> " + val + "File -> " + imgName);
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
@@ -256,19 +264,69 @@ public class DepotActivity extends AppCompatActivity {
     }
 
     private void showFileBrowser() {
-        Toast.makeText(mContext, "浏览文件", Toast.LENGTH_LONG).show();
+//        Toast.makeText(mContext, "浏览文件", Toast.LENGTH_LONG).show();
         Uri uri = Uri.fromFile(new File(imgDir));
+//        Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        scanIntent.setData(uri);
+//        mContext.sendBroadcast(scanIntent);
+
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);
-//        intent.setAction(Intent.ACTION_PICK);
 //        intent.setAction(Intent.ACTION_GET_CONTENT);
         intent.setDataAndType(uri, "image/*");
         startActivity(intent);
+/*
+        File folder = new File(imgDir);
+        allFiles = folder.list();
+        for(int i=0;i<allFiles.length;i++)
+        {
+            Log.d(TAG, allFiles[i]+allFiles.length);
+        }
+
+        SCAN_PATH = imgDir + allFiles[0];
+        if(conn!=null)
+        {
+            conn.disconnect();
+        }
+        conn = new MediaScannerConnection(this, this);
+        conn.connect();
+        */
     }
 
     private void showFileSearch() {
-        Toast.makeText(mContext, "查找文件", Toast.LENGTH_LONG).show();
+//        Toast.makeText(mContext, "搜索", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(DepotActivity.this, ActionSearchActivity.class);
+        intent.putExtra(ActionSearchActivity.WORK_DIR_KEY, imgDir);
+        startActivity(intent);
     }
+
+    public static void onSaveFinished() {
+        Toast.makeText(mContext, mContext.getString(R.string.save_finished), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onMediaScannerConnected() {
+        Log.d(TAG,"success "+conn);
+        Log.i(TAG, "path -> " + SCAN_PATH);
+        conn.scanFile(SCAN_PATH, FILE_TYPE);
+    }
+    @Override
+    public void onScanCompleted(String path, Uri uri) {
+        try {
+            Log.d(TAG,uri + "success"+conn);
+            if (uri != null)
+            {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(uri);
+                startActivity(intent);
+            }
+        } finally
+        {
+            conn.disconnect();
+            conn = null;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -295,9 +353,10 @@ public class DepotActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == TAKE_PHOTOS) {
                 Log.i(TAG, "Take photo finished...");
-
                 Intent intent = new Intent(DepotActivity.this, ClipImageActivity.class);
-                intent.putExtra(ZOOM_PHOTO_KEY, imgName);
+                intent.putExtra(ClipImageActivity.PHOTONAME_KEY, fileName);
+                intent.putExtra(ClipImageActivity.PHOTOFILE_KEY, imgName);
+                intent.putExtra(ClipImageActivity.DEPOT_KEY, depot);
                 startActivity(intent);
             }
         }

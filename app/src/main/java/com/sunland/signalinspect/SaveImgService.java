@@ -2,6 +2,7 @@ package com.sunland.signalinspect;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -13,8 +14,8 @@ import android.util.Log;
 
 public class SaveImgService extends IntentService {
 
-	
-	private static final String LOG_TAG = "MxCAD SaveImgService";
+    private static final String PHOTO_TABLE = "Photos";
+	private static final String LOG_TAG = "wumin SaveImgService";
 	
 	public SaveImgService() {
 		super("SaveImgService");
@@ -26,28 +27,36 @@ public class SaveImgService extends IntentService {
 		// TODO Auto-generated method stub
 		if (intent != null) {
 			final String action = intent.getAction();
-//			if (CustomPhotos.ACTION_SAVE_IMG == action) {
-//				Log.i(LOG_TAG, "Start handle intent");
-//				String dbDir = intent.getStringExtra(CustomPhotos.PHOTODB_KEY);
-//				String photoFile = intent.getStringExtra(CustomPhotos.PHOTOFILE_KEY);
-//				String photoName = intent.getStringExtra(CustomPhotos.PHOTONAME_KEY);
-//				save2db(dbDir, photoFile, photoName);
-//				CustomPhotos.onSaveFinished();
-//			}
+			if (ClipImageActivity.ACTION_SAVE_IMG == action) {
+				Log.i(LOG_TAG, "Start handle intent");
+				String dbDir = intent.getStringExtra(ClipImageActivity.PHOTODB_KEY);
+				String photoFile = intent.getStringExtra(ClipImageActivity.PHOTOFILE_KEY);
+				String photoName = intent.getStringExtra(ClipImageActivity.PHOTONAME_KEY);
+				save2db(dbDir, photoFile, photoName);
+			}
 		}
 	}
 	
 	private void save2db(String dbDir, String photoFile, String photoName) {
-		SQLiteDatabase db = SQLiteDatabase.openDatabase(dbDir, null, SQLiteDatabase.OPEN_READWRITE);
-//		Bitmap bitmap = compressImageByQuatity(BitmapFactory.decodeFile(photoFile));
-//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//		bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-//		byte[] inByte = baos.toByteArray();
+        SQLiteDatabase db = null;
+        File dbFile = new File(dbDir);
+        if(!dbFile.exists()) {
+            Log.i(LOG_TAG, "Create new database");
+            db = SQLiteDatabase.openOrCreateDatabase(dbDir, null);
+            String photosTable = "create table Photos(pid integer primary key autoincrement,name text,data BLOB)";
+            db.execSQL(photosTable);
+
+        } else {
+            Log.i(LOG_TAG, "Open database");
+            db = SQLiteDatabase.openDatabase(dbDir, null, SQLiteDatabase.OPEN_READWRITE);
+        }
+
 		byte[] inByte = compressImageByQuatity(BitmapFactory.decodeFile(photoFile));
 		
 		db.execSQL("insert into Photos (name, data) values(?,?)",new 
 				Object[]{photoName, inByte});
 		db.close();
+        DepotActivity.onSaveFinished();
 		Log.i(LOG_TAG, "Save To database finished!");
 	}
 	
