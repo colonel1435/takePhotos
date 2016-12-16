@@ -1,5 +1,6 @@
 package com.sunland.signalinspect;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -142,7 +143,7 @@ public class DepotActivity extends AppCompatActivity implements MediaScannerConn
                         | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
                 swipeFlags = 0;
             } else {
-                dragFlags = 0;
+                dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
                 swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
             }
             return makeMovementFlags(dragFlags, swipeFlags);
@@ -150,7 +151,13 @@ public class DepotActivity extends AppCompatActivity implements MediaScannerConn
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            return false;
+            if (viewHolder.getItemViewType() != target.getItemViewType()) {
+                return false;
+            }
+            int old = viewHolder.getLayoutPosition();
+            int newPos = target.getLayoutPosition();
+            myDCRecyclerAdapter.notifyItemMoved(old, newPos);
+            return true;
         }
 
         @Override
@@ -262,6 +269,7 @@ public class DepotActivity extends AppCompatActivity implements MediaScannerConn
                         String fileName = createPhotoName(OTHER_PHOTO_TYPE, val, getString(R.string.dc_misc));
                         imgName = imgDir + fileName;
                         Log.i(TAG, "Val -> " + val + "File -> " + imgName);
+                        CustomUtils.hideKeyboard(popupView);
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
                         startActivityForResult(intent, TAKE_PHOTOS);
@@ -307,6 +315,42 @@ public class DepotActivity extends AppCompatActivity implements MediaScannerConn
         startActivity(intent);
     }
 
+    private void addDC() {
+        final View popupView =  LayoutInflater.from(mContext).inflate(R.layout.dialog_dc_item, null);
+        final EditText etPhoto = (EditText)popupView.findViewById(R.id.et_dc_item);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(R.string.notification_msg_title)
+                .setView(popupView)
+                .setNegativeButton(getString(R.string.depot_cancle), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton(getString(R.string.depot_new), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String val = etPhoto.getText().toString();
+                        if (val.length() == 0) {
+                            Toast.makeText(mContext, getString(R.string.msg_photo_null), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        mData.add(val);
+                        myDCRecyclerAdapter.notifyDataSetChanged();
+
+                        SharedPreferences sp = getSharedPreferences(depot, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        String item_name = sp.getString(DC_ITEM_KEY, "");
+                        item_name += val;
+                        item_name += DC_ITEM_SEP;
+                        editor.putString(DC_ITEM_KEY, item_name).commit();
+
+                        CustomUtils.hideKeyboard(popupView);
+                    }
+                })
+                .create().show();
+
+    }
     public static void onSaveFinished() {
         Toast.makeText(mContext, mContext.getString(R.string.save_finished), Toast.LENGTH_LONG).show();
     }
@@ -353,6 +397,9 @@ public class DepotActivity extends AppCompatActivity implements MediaScannerConn
                 return true;
             case R.id.action_browse:
                 showFileBrowser();
+                return true;
+            case R.id.action_add:
+                addDC();
                 return true;
         }
 

@@ -32,12 +32,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dialog_depot_left_margin"
                 android:layout_marginRight="@dimen/dialog_depot_right_margin">
-                <TextView
+                <Button
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/dialog_depot_right_margin"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:clickable="false"
                     android:text="@string/history_title"/>
                 <Button
                     android:layout_width="0dp"
@@ -52,8 +53,9 @@
                 android:id="@+id/history_msg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dialog_depot_top_margin"
                 android:gravity="center"
-                android:visibility="invisible"
+                android:visibility="gone"
                 android:text="@string/history_msg"/>
             <ListView
                 android:id="@+id/listview_search_history"

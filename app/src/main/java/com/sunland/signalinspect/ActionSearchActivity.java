@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -50,6 +52,7 @@ public class ActionSearchActivity extends AppCompatActivity {
     private MyAdapter mAdapter;
     private ArrayAdapter<String> mHistoryAdapter;
     private static String workDir = "";
+    private String usrInput = "";
 
 
     @Override
@@ -91,7 +94,7 @@ public class ActionSearchActivity extends AppCompatActivity {
 
         mHistoryMsg = (TextView) findViewById(R.id.history_msg);
         if (mHistoryItems.size() < 1) {
-            mHistoryView.setVisibility(View.VISIBLE);
+            mHistoryMsg.setVisibility(View.VISIBLE);
         }
 
     }
@@ -101,6 +104,7 @@ public class ActionSearchActivity extends AppCompatActivity {
         mSearchView.setOnQueryTextListener(mOnQueryTextListener);
 
         mListView.setOnItemClickListener(onItemClickListener);
+        mHistoryView.setOnItemClickListener(onHistoryItemClickListener);
 
     }
 
@@ -120,22 +124,35 @@ public class ActionSearchActivity extends AppCompatActivity {
         return lists;
     }
 
-    public void clearHistory() {
+    public void clearHistory(View view) {
         SharedPreferences sp = getSharedPreferences(HISTORY_LIST, MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.clear().commit();
         mHistoryItems.clear();
         mHistoryAdapter.notifyDataSetChanged();
 
+        mHistoryMsg.setVisibility(View.VISIBLE);
+
     }
-    public void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
+
+    private AdapterView.OnItemClickListener onHistoryItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//            String item = mHistoryItems.get(position);
+
+        }
+    };
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            hideKeyboard(view);
+            CustomUtils.hideKeyboard(view);
+            if (!usrInput.isEmpty()) {
+                SharedPreferences sp = getSharedPreferences(HISTORY_LIST, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString(usrInput, usrInput).commit();
+                mHistoryItems.add(usrInput);
+                mHistoryAdapter.notifyDataSetChanged();
+            }
 //            Toast.makeText(mContext, "ITEM -> " + mItems[position], Toast.LENGTH_LONG).show();
             Uri uri = Uri.fromFile(new File(workDir + mItemsBak.get(position)));
             Intent intent = new Intent();
@@ -166,18 +183,19 @@ public class ActionSearchActivity extends AppCompatActivity {
         public boolean onQueryTextChange(String newText) {
             if (newText.length() > 0) {
 //                mListView.setFilterText(newText.toString());
-                mAdapter.getFilter().filter(newText);
+                usrInput = newText;
                 mListView.setVisibility(View.VISIBLE);
                 mHistoryLayout.setVisibility(View.INVISIBLE);
+                mAdapter.getFilter().filter(newText);
             } else {
-                mListView.clearTextFilter();
                 mListView.setVisibility(View.INVISIBLE);
                 mHistoryLayout.setVisibility(View.VISIBLE);
                 if (mHistoryItems.size() < 1) {
                     mHistoryMsg.setVisibility(View.VISIBLE);
                 } else {
-                    mHistoryMsg.setVisibility(View.INVISIBLE);
+                    mHistoryMsg.setVisibility(View.GONE);
                 }
+                mListView.clearTextFilter();
             }
             return true;
         }
@@ -219,8 +237,19 @@ public class ActionSearchActivity extends AppCompatActivity {
                 convertView = View.inflate(mContext, R.layout.action_search_item, null);
             }
             TextView item = (TextView) convertView.findViewById(R.id.tv_action_search_item);
-            item.setText(mItems.get(position));
-
+            String text = mItems.get(position);
+            if (!text.isEmpty() && text.contains(usrInput)) {
+                int index = text.indexOf(usrInput);
+                int len = usrInput.length();
+                Spanned tmp = Html.fromHtml(text.substring(0, index)
+                                + "<font color=#FF0000>"
+                                + text.substring(index, index + len) + "</font>"
+                                + text.substring(index + len, text.length()));
+                item.setText(tmp);
+            } else {
+                item.setText(text);
+            }
+//            item.setText(mItems.get(position));
             return convertView;
         }
 

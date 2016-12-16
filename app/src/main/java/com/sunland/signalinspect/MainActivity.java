@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                          | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
                 swipeFlags = 0;
             } else {
-                dragFlags = 0;
+                dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
                 swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
             }
             return makeMovementFlags(dragFlags, swipeFlags);
@@ -99,7 +99,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            return false;
+            int old = viewHolder.getLayoutPosition();
+            int newPos = target.getLayoutPosition();
+            myRecyclerAdapter.notifyItemMoved(old, newPos);
+            return true;
         }
 
         @Override
