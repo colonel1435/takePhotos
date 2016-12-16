@@ -117,7 +117,8 @@ public class DepotActivity extends AppCompatActivity implements MediaScannerConn
         mScrollView.smoothScrollTo(0,0);
 
         mRecyclerView = (RecyclerView)this.findViewById(R.id.recyclerview_dc_item);
-        mRecyclerView.setLayoutManager(new MyLinearLayoutManager(mContext));
+//        mRecyclerView.setLayoutManager(new MyLinearLayoutManager(mContext));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setHasFixedSize(true);
         mData = getData();
@@ -266,12 +267,11 @@ public class DepotActivity extends AppCompatActivity implements MediaScannerConn
                             Toast.makeText(mContext, getString(R.string.msg_photo_null), Toast.LENGTH_LONG).show();
                             return;
                         }
-                        String fileName = createPhotoName(OTHER_PHOTO_TYPE, val, getString(R.string.dc_misc));
+                        fileName = createPhotoName(OTHER_PHOTO_TYPE, val, getString(R.string.dc_misc));
                         imgName = imgDir + fileName;
-                        Log.i(TAG, "Val -> " + val + "File -> " + imgName);
                         CustomUtils.hideKeyboard(popupView);
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(imgName)));
                         startActivityForResult(intent, TAKE_PHOTOS);
                     }
                 })
