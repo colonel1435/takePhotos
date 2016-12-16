@@ -47,4 +47,9 @@
     <string name="history_button">清空搜索历史</string>
     <string name="history_title">历史记录</string>
     <string name="history_msg">历史记录已清空</string>
+
+    <string name="select_all">全选</string>
+    <string name="select_reverse">反选</string>
+    <string name="select_del">删除</string>
+    <string name="cancal_select">取消</string>
 </resources>

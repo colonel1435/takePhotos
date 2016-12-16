@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.sunland.signalinspect.SearchInfo;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,12 +33,13 @@ public class CustomUtils {
             return newString;
         }
 
-    public static void getFileList(List<String> fileList, String path) {
+    public static void getFileList(List<SearchInfo> fileList, String path) {
         File[] allFiles = new File(path).listFiles();
         for (int i = 0; i < allFiles.length; i++) {
             File file = allFiles[i];
             if (file.isFile() && file.getName().endsWith(JPG_POSTFIX)) {
-                fileList.add(file.getName());
+                SearchInfo item = new SearchInfo(file.getName(), false);
+                fileList.add(item);
             }
         }
     }

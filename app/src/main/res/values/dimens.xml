@@ -13,6 +13,13 @@
     <dimen name="dialog_depot_left_margin">30dp</dimen>
     <dimen name="dialog_depot_right_margin">30dp</dimen>
     <dimen name="depot_item_height">48dp</dimen>
-    <dimen name="search_item_height">24dp</dimen>
+    <dimen name="search_item_height">18dp</dimen>
     <dimen name="default_action_bar_size">64dp</dimen>
+    <dimen name="button_width">48dp</dimen>
+    <dimen name="button_height">36dp</dimen>
+    <dimen name="button_left_margin">16dp</dimen>
+    <dimen name="button_right_margin">16dp</dimen>
+    <dimen name="button_top_margin">10dp</dimen>
+    <dimen name="button_bottom_margin">10dp</dimen>
+    <dimen name="list_item_height">48dp</dimen>
 </resources>

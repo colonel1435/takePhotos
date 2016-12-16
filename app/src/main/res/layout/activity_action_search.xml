@@ -14,19 +14,63 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ListView
-            android:id="@+id/listview_search"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="invisible">
-        </ListView>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/listview_search"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:visibility="visible">
+            </ListView>
+            <LinearLayout
+                android:id="@+id/llayout_multiple_select"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:visibility="gone">
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/button_left_margin"
+                    android:layout_marginRight="@dimen/button_right_margin"
+                    android:text="@string/select_all"
+                    android:onClick="onSelectAll"/>
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/button_left_margin"
+                    android:layout_marginRight="@dimen/button_right_margin"
+                    android:text="@string/select_reverse"
+                    android:onClick="onSelectOpposite"/>
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/button_left_margin"
+                    android:layout_marginRight="@dimen/button_right_margin"
+                    android:text="@string/select_del"
+                    android:onClick="onSelectDelete"/>
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/button_left_margin"
+                    android:layout_marginRight="@dimen/button_right_margin"
+                    android:text="@string/cancal_select"
+                    android:onClick="onSelectCancle"/>
+            </LinearLayout>
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/ll_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

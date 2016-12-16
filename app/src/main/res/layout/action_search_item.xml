@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center">
 
     <TextView
         android:id="@+id/tv_action_search_item"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dialog_depot_top_margin"
-        android:layout_marginBottom="@dimen/dialog_depot_bottom_margin"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/button_top_margin"
+        android:layout_marginBottom="@dimen/button_bottom_margin"
         android:layout_marginLeft="@dimen/dialog_depot_left_margin"
         android:layout_marginRight="@dimen/dialog_depot_right_margin"
         android:textSize="@dimen/search_item_height"/>
+
+
+    <CheckBox
+        android:id="@+id/cb_action_search_item"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/button_top_margin"
+        android:layout_marginTop="@dimen/button_top_margin"
+        android:layout_marginBottom="@dimen/button_bottom_margin"
+        android:layout_marginRight="@dimen/dialog_depot_right_margin"
+        android:onClick="onCheckClicked"
+        android:visibility="visible"/>
 
 </LinearLayout>
