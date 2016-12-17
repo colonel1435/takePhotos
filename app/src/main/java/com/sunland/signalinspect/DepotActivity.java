@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -72,8 +73,8 @@ public class DepotActivity extends AppCompatActivity {
     private int dc_num;
     private int dc_item_max;
     private TextView mTitle;
-    private Button btSetPosition;
-    private Button btBackPosition;
+    private ImageButton btSetPosition;
+    private ImageButton btBackPosition;
     private ScrollView mScrollView;
     private RecyclerView mRecyclerView;
     private MyDCRecyclerAdapter myDCRecyclerAdapter;
@@ -127,8 +128,8 @@ public class DepotActivity extends AppCompatActivity {
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         View itemView = LayoutInflater.from(mContext).inflate(R.layout.dc_item, null);
-        btSetPosition = (Button) itemView.findViewById(R.id.dc_set_position);
-        btBackPosition = (Button) itemView.findViewById(R.id.dc_back_position);
+        btSetPosition = (ImageButton) itemView.findViewById(R.id.dc_set_position);
+        btBackPosition = (ImageButton) itemView.findViewById(R.id.dc_back_position);
 
     }
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -73,14 +74,18 @@ public class MyDCRecyclerAdapter extends RecyclerView.Adapter<MyDCRecyclerAdapte
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mDC;
-        private Button btSetPosition;
-        private Button btBackPosition;
+        private ImageButton btSetPosition;
+        private ImageButton btBackPosition;
+        private ImageView ivSetThumb;
+        private ImageView ivBackThumb;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mDC = (TextView) itemView.findViewById(R.id.tv_dc_name);
-            btSetPosition =(Button) itemView.findViewById(R.id.dc_set_position);
-            btBackPosition = (Button) itemView.findViewById(R.id.dc_back_position);
+            ivSetThumb = (ImageView)itemView.findViewById(R.id.iv_set_position_thumb);
+            ivBackThumb = (ImageView)itemView.findViewById(R.id.iv_set_position_thumb);
+            btSetPosition =(ImageButton) itemView.findViewById(R.id.dc_set_position);
+            btBackPosition = (ImageButton) itemView.findViewById(R.id.dc_back_position);
         }
         public void bindData(String item) {
             if (item != null) {
