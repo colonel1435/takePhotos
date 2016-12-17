@@ -5,6 +5,13 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:gravity="center">
+    <ImageView
+        android:id="@+id/iv_action_search_item"
+        android:layout_width="@dimen/image_width"
+        android:layout_height="@dimen/image_width"
+        android:layout_marginTop="@dimen/button_top_margin"
+        android:layout_marginBottom="@dimen/button_bottom_margin"
+        android:layout_marginLeft="@dimen/button_left_margin"/>
 
     <TextView
         android:id="@+id/tv_action_search_item"

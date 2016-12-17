@@ -2,6 +2,7 @@ package com.sunland.signalinspect;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.sunland.view.ClipImageLayout;
+
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -53,7 +56,8 @@ public class ClipImageActivity extends AppCompatActivity {
                 File file = new File(photoFile);
                 if (file.exists())
                     file.delete();
-                byte[] bytes = compressImageByQuatity(bitmap);
+//                byte[] bytes = compressImageByQuatity(bitmap);
+                byte[] bytes = compressImageBySize(bitmap);
                 try {
                     FileOutputStream fos = new FileOutputStream(file);
                     fos.write(bytes);
@@ -85,7 +89,7 @@ public class ClipImageActivity extends AppCompatActivity {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         int options = 100;
-        while ( baos.toByteArray().length / 1024>500) {    //<=500k
+        while ( baos.toByteArray().length / 1024>100) {    //<=500k
             baos.reset();	//reset
             options -= 10;
             bmp.compress(Bitmap.CompressFormat.JPEG, options, baos);
@@ -95,5 +99,38 @@ public class ClipImageActivity extends AppCompatActivity {
 //        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);
         return baos.toByteArray();
     }
+
+    private byte[] compressImageBySize(Bitmap bmp) {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        if( baos.toByteArray().length / 1024>500) {
+            baos.reset();
+            bmp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        }
+        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());
+        BitmapFactory.Options newOpts = new BitmapFactory.Options();
+        newOpts.inJustDecodeBounds = true;
+        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, newOpts);
+        newOpts.inJustDecodeBounds = false;
+        int w = newOpts.outWidth;
+        int h = newOpts.outHeight;
+        float hh = 800f;
+        float ww = 480f;
+        int be = 1;
+        if (w > h && w > ww) {
+            be = (int) (newOpts.outWidth / ww);
+        } else if (w < h && h > hh) {
+            be = (int) (newOpts.outHeight / hh);
+        }
+        if (be <= 0)
+            be = 1;
+        newOpts.inSampleSize = be;
+        newOpts.inPreferredConfig = Bitmap.Config.RGB_565;
+        isBm = new ByteArrayInputStream(baos.toByteArray());
+        bitmap = BitmapFactory.decodeStream(isBm, null, newOpts);
+        return compressImageByQuatity(bitmap);
+    }
+
 
 }

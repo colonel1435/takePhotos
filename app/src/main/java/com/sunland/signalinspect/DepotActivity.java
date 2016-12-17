@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.Inflater;
 
-public class DepotActivity extends AppCompatActivity implements MediaScannerConnection.MediaScannerConnectionClient{
+public class DepotActivity extends AppCompatActivity {
 
     public static final String WORK_DIR = "/signalInspect/";
     private static final String DATE_FORMAT_STR = "yyMMddHHmm";
@@ -80,8 +80,6 @@ public class DepotActivity extends AppCompatActivity implements MediaScannerConn
     private ItemTouchHelper mItemTouchHelper;
     List<String> mData;
 
-    private MediaScannerConnection conn;
-    public String[] allFiles;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,7 +171,6 @@ public class DepotActivity extends AppCompatActivity implements MediaScannerConn
             SharedPreferences.Editor editor = sp.edit();
             String item_name = sp.getString(DC_ITEM_KEY, "");
             item_name = CustomUtils.delStr(item_name, delStr);
-//            Log.i(TAG, "Rest -> " + item_name);
             editor.putString(DC_ITEM_KEY, item_name).commit();
 
         }
@@ -281,31 +278,13 @@ public class DepotActivity extends AppCompatActivity implements MediaScannerConn
     private void showFileBrowser() {
 //        Toast.makeText(mContext, "浏览文件", Toast.LENGTH_LONG).show();
         Uri uri = Uri.fromFile(new File(imgDir));
-//        Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//        scanIntent.setData(uri);
-//        mContext.sendBroadcast(scanIntent);
 
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);
 //        intent.setAction(Intent.ACTION_GET_CONTENT);
         intent.setDataAndType(uri, "image/*");
         startActivity(intent);
-/*
-        File folder = new File(imgDir);
-        allFiles = folder.list();
-        for(int i=0;i<allFiles.length;i++)
-        {
-            Log.d(TAG, allFiles[i]+allFiles.length);
-        }
 
-        SCAN_PATH = imgDir + allFiles[0];
-        if(conn!=null)
-        {
-            conn.disconnect();
-        }
-        conn = new MediaScannerConnection(this, this);
-        conn.connect();
-        */
     }
 
     private void showFileSearch() {
@@ -355,28 +334,6 @@ public class DepotActivity extends AppCompatActivity implements MediaScannerConn
         Toast.makeText(mContext, mContext.getString(R.string.save_finished), Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onMediaScannerConnected() {
-        Log.d(TAG,"success "+conn);
-        Log.i(TAG, "path -> " + SCAN_PATH);
-        conn.scanFile(SCAN_PATH, FILE_TYPE);
-    }
-    @Override
-    public void onScanCompleted(String path, Uri uri) {
-        try {
-            Log.d(TAG,uri + "success"+conn);
-            if (uri != null)
-            {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(uri);
-                startActivity(intent);
-            }
-        } finally
-        {
-            conn.disconnect();
-            conn = null;
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

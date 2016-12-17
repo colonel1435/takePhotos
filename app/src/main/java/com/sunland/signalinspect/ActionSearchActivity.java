@@ -3,6 +3,8 @@ package com.sunland.signalinspect;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,6 +33,7 @@ import com.sunland.utils.CustomUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +43,10 @@ public class ActionSearchActivity extends AppCompatActivity {
 
     public static final String WORK_DIR_KEY = "WORK_DIR";
     public static final String HISTORY_LIST = "search_history";
+    private static final int THUMBNAIL_WIDTH = 64;
+    private static final int THUMBNAIL_HEIGHT = 64;
+
+    private static final String TAG = "wumin";
     private Toolbar toolbar;
     private LinearLayout mMulSelectLayout;
     private SearchView mSearchView;
@@ -52,10 +61,11 @@ public class ActionSearchActivity extends AppCompatActivity {
     private List<String> mHistoryItems;
     private MySearchAdapter mAdapter;
     private ArrayAdapter<String> mHistoryAdapter;
-    private static String workDir = "";
+    public static String workDir = "";
     private String usrInput = "";
     private int NORMAL_CHOICE = 0;
     private int MULTIPLE_CHOICE = 1;
+    public static String THUMBNAIL_LABEL = "thumbnail/";
 
     private int mode = NORMAL_CHOICE;
 
@@ -90,7 +100,8 @@ public class ActionSearchActivity extends AppCompatActivity {
 //        CustomUtils.hideKeyboard(mSearchView);
 
         mItems = getDatas();
-        mItemsBak = mItems;
+        mItemsBak = new ArrayList<>();
+        mItemsBak.addAll(mItems);
         mListView = (ListView) findViewById(R.id.listview_search);
         mListView.setTextFilterEnabled(true);
         mAdapter = new MySearchAdapter(mContext, mItems);
@@ -216,10 +227,10 @@ public class ActionSearchActivity extends AppCompatActivity {
             if (newText.length() > 0) {
                 usrInput = newText;
                 mListView.setVisibility(View.VISIBLE);
-                mHistoryLayout.setVisibility(View.INVISIBLE);
+                mHistoryLayout.setVisibility(View.GONE);
                 mAdapter.getFilter().filter(newText);
             } else {
-                mListView.setVisibility(View.INVISIBLE);
+                mListView.setVisibility(View.GONE);
                 mHistoryLayout.setVisibility(View.VISIBLE);
                 if (mHistoryItems.size() < 1) {
                     mHistoryMsg.setVisibility(View.VISIBLE);
@@ -234,7 +245,7 @@ public class ActionSearchActivity extends AppCompatActivity {
 
     public void onSelectAll(View view){
         for(int i= 0; i< mAdapter.getCount(); i++){
-            mListView.setItemChecked(i, true);
+//            mListView.setItemChecked(i, true);
             mItems.get(i).setChecked(true);
             mAdapter.notifyDataSetChanged();
         }
@@ -242,37 +253,49 @@ public class ActionSearchActivity extends AppCompatActivity {
 
     public void onSelectOpposite(View view){
         for(int i= 0; i< mAdapter.getCount(); i++){
-            mListView.setItemChecked(i, !mListView.isItemChecked(i));
+//            mListView.setItemChecked(i, !mListView.isItemChecked(i));
             mItems.get(i).setChecked(mItems.get(i).getChecked()? false:true);
             mAdapter.notifyDataSetChanged();
         }
     }
 
     public void onSelectDelete(View view){
-        for(int i= 0; i< mAdapter.getCount(); i++){
+        List<SearchInfo> delList = new ArrayList<>();
+        int size = mAdapter.getCount();
+        int del = 0;
+        List<SearchInfo> tmp = new ArrayList<>();
+        tmp.addAll(mItems);
+        for(int i= 0; i < size; i++){
             if (mItems.get(i).getChecked()) {
+                delList.add(mItems.get(i));
                 String title = workDir + mItems.get(i).getTitle();
                 File img = new File(title);
                 if (img.exists()) {
                     img.delete();
                 }
-                mItems.remove(i);
-                mAdapter.notifyDataSetChanged();
-//                Toast.makeText(mContext, "Del -> " + title,Toast.LENGTH_LONG).show();
+                tmp.remove(i-del);
+                del ++;
             }
         }
-        mItemsBak = mItems;
+        if (delList.size() > 0) {
+            mItemsBak.removeAll(delList);
+        }
+        mItems.clear();
+        mItems.addAll(tmp);
+        mAdapter.notifyDataSetChanged();
+
     }
 
     public void onSelectCancle(View view) {
         for(int i= 0; i< mAdapter.getCount(); i++){
-            mListView.setItemChecked(i, false);
+//            mListView.setItemChecked(i, false);
             mItems.get(i).setChecked(false);
             mode = NORMAL_CHOICE;
             mAdapter.notifyDataSetChanged();
             mMulSelectLayout.setVisibility(GONE);
-            mSearchView.setVisibility(View.VISIBLE);
         }
+        mSearchView.setVisibility(View.VISIBLE);
+        toolbar.setTitle("");
     }
     public void onCheckClicked(View view) {
         int position = (int)view.getTag();
@@ -281,7 +304,6 @@ public class ActionSearchActivity extends AppCompatActivity {
         } else {
             mItems.get(position).setChecked(true);
         }
-        mItemsBak = mItems;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -325,8 +347,25 @@ public class ActionSearchActivity extends AppCompatActivity {
             if (null == convertView) {
                 convertView = View.inflate(mContext, R.layout.action_search_item, null);
             }
-            TextView item = (TextView) convertView.findViewById(R.id.tv_action_search_item);
+
             String text = mItems.get(position).getTitle();
+            ImageView ivItem = (ImageView) convertView.findViewById(R.id.iv_action_search_item);
+            String thumbDir = workDir + THUMBNAIL_LABEL;
+            File dir = new File(thumbDir);
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+            String thumbFile = thumbDir + text;
+            File thumb = new File(thumbFile);
+            Bitmap bmp = null;
+            if (thumb.exists()) {
+                bmp = BitmapFactory.decodeFile(thumbFile);
+            } else {
+                bmp = CustomUtils.getImageThumbnail(text, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
+            }
+            ivItem.setImageBitmap(bmp);
+
+            TextView item = (TextView) convertView.findViewById(R.id.tv_action_search_item);
             if (!text.isEmpty() && text.contains(usrInput)) {
                 int index = text.indexOf(usrInput);
                 int len = usrInput.length();
@@ -340,8 +379,8 @@ public class ActionSearchActivity extends AppCompatActivity {
             }
 
             CheckBox check = (CheckBox) convertView.findViewById(R.id.cb_action_search_item);
+            check.setChecked(mItems.get(position).getChecked()? true:false);
             check.setTag(position);
-            check.setChecked(mItems.get(position).getChecked());
             if(mode == MULTIPLE_CHOICE) {
                 check.setVisibility(View.VISIBLE);
             } else {
@@ -389,8 +428,9 @@ public class ActionSearchActivity extends AppCompatActivity {
             @Override
             protected void publishResults(CharSequence constraint,
                                           FilterResults results) {
-                mItems = (List<SearchInfo>) results.values;
-
+                mItems.clear();
+                mItems.addAll((List<SearchInfo>) results.values);
+//                mItems = (List<SearchInfo>) results.values;
                 if (results.count > 0) {
                     mAdapter.notifyDataSetChanged();  // 通知数据发生了改变
                 } else {
