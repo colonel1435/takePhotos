@@ -13,6 +13,7 @@ import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DecorContentParent;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -208,22 +209,7 @@ public class DepotActivity extends AppCompatActivity {
                     String setStatus = sp.getString(dc+dcItem+getString(R.string.dc_set_position), "");
                     dcInfo.setSetThumb(setStatus);
                     String backStatus = sp.getString(dc+dcItem+getString(R.string.dc_back_position), "");
-                    dcInfo.setSetThumb(backStatus);
-//                    if (dcItem.indexOf(DC_STATUS_SEP) != -1) {
-//                        String[] thumbs = dcItem.split(DC_STATUS_SEP);
-//                        for (String thumb : thumbs) {
-//                            if (thumb.indexOf(getString(R.string.dc_set_position)) != -1) {
-//                                dcInfo.setSetThumb(thumb);
-//                            }
-//                            if (thumb.indexOf(getString(R.string.dc_back_position)) != -1) {
-//                                dcInfo.setBackThumb(thumb);
-//                            } else {
-//                                dcInfo.setItem(thumb);
-//                            }
-//                        }
-//                    } else {
-//                        dcInfo.setItem(dcItem);
-//                    }
+                    dcInfo.setBackThumb(backStatus);
 
                     itemList.add(dcInfo);
                 }
@@ -319,15 +305,64 @@ public class DepotActivity extends AppCompatActivity {
                 .create().show();
     }
 
-    public void onThumbClick(View view) {
-        String thumb = null;
-//        int position = (int)view.getTag(MyDCTurnoutRecyclerAdapter.VIEW_POSITION_KEY);
-        if (thumb != null) {
-            Toast.makeText(mContext, "SHOW THUMB -> " + thumb, Toast.LENGTH_LONG).show();
-        } else {
+    public void onSetThumbClick(View view) {
+        String path = (String)view.getTag(R.id.ivSetPositionContent);
+        if (path.equals("")) {
             Toast.makeText(mContext, getString(R.string.show_thumb_null), Toast.LENGTH_LONG).show();
+            return;
         }
+
+        String file = CustomUtils.delStr2End(path, ActionSearchActivity.THUMBNAIL_LABEL, "/");
+        Uri uri = Uri.fromFile(new File(file));
+        Intent intent = new Intent();
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+        intent.setDataAndType(uri, "image/*");
+        startActivity(intent);
+        /*
+        Intent intent = new Intent(DepotActivity.this, DispalyImageActivity.class);
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+
+        intent.putExtra("path", path);
+        intent.putExtra("locationX", location[0]);
+        intent.putExtra("locationY", location[1]);
+
+        intent.putExtra("width", view.getWidth());
+        intent.putExtra("height", view.getHeight());
+        startActivity(intent);
+        overridePendingTransition(0, 0);
+        */
     }
+
+    public void onBackThumbClick(View view) {
+
+        String path = (String)view.getTag(R.id.ivBackPositionContent);
+        if (path.equals("")) {
+            Toast.makeText(mContext, getString(R.string.show_thumb_null), Toast.LENGTH_LONG).show();
+            return;
+        }
+        String file = CustomUtils.delStr2End(path, ActionSearchActivity.THUMBNAIL_LABEL, "/");
+        Uri uri = Uri.fromFile(new File(file));
+        Intent intent = new Intent();
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+        intent.setDataAndType(uri, "image/*");
+        startActivity(intent);
+        /*
+        Intent intent = new Intent(DepotActivity.this, DispalyImageActivity.class);
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+
+        intent.putExtra("path", path);
+        intent.putExtra("locationX", location[0]);
+        intent.putExtra("locationY", location[1]);
+
+        intent.putExtra("width", view.getWidth());
+        intent.putExtra("height", view.getHeight());
+        startActivity(intent);
+        overridePendingTransition(0, 0);
+        */
+    }
+
     private void showFileBrowser() {
 //        Toast.makeText(mContext, "浏览文件", Toast.LENGTH_LONG).show();
         Uri uri = Uri.fromFile(new File(imgDir));
