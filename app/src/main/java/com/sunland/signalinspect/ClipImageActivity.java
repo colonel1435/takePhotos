@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.sunland.utils.CustomUtils;
 import com.sunland.view.ClipImageLayout;
 
 import java.io.ByteArrayInputStream;
@@ -42,7 +44,7 @@ public class ClipImageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         photoFile = bundle.getString(PHOTOFILE_KEY);
         mDepot = bundle.getString(DEPOT_KEY);
@@ -72,10 +74,18 @@ public class ClipImageActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                Message msg = DepotActivity.mHandler.obtainMessage();
-                msg.what = DepotActivity.SHOW_THUMB;
-                msg.obj = photoFile;
-                DepotActivity.mHandler.sendMessage(msg);
+                String thumbDir = Environment.getExternalStorageDirectory() + DepotActivity.WORK_DIR + ActionSearchActivity.THUMBNAIL_LABEL;
+                File dir = new File(thumbDir);
+                if (!dir.exists()) {
+                    dir.mkdir();
+                }
+                String thumbFile = thumbDir + photoName;
+                Bitmap bmp = CustomUtils.getImageThumbnail(photoName, ActionSearchActivity.THUMBNAIL_WIDTH, ActionSearchActivity.THUMBNAIL_HEIGHT);
+
+                Log.i(TAG, "Thumb -> " + thumbFile);
+                intent.putExtra(DepotActivity.ZOOM_PHOTO_KEY, thumbFile);
+                setResult(RESULT_OK, intent);
+                ClipImageActivity.this.finish();
 //                SharedPreferences sp = getSharedPreferences(mDepot, MODE_PRIVATE);
 //                SharedPreferences.Editor editor = sp.edit();
 //                Intent intent = new Intent(ClipImageActivity.this, showImageActivity.class);
@@ -89,7 +99,6 @@ public class ClipImageActivity extends AppCompatActivity {
 //                saveImg.putExtra(PHOTODB_KEY, dbDir);
 //                Log.i(TAG, "Photo name -> " + photoName + " Photo file -> " + photoFile + " DB ->" + dbDir);
 //                startService(saveImg);
-                ClipImageActivity.this.finish();
             }
         });
     }

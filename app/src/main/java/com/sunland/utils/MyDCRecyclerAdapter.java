@@ -67,7 +67,7 @@ public class MyDCRecyclerAdapter extends RecyclerView.Adapter<MyDCRecyclerAdapte
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         holder.recyclerView.setItemAnimator(new DefaultItemAnimator());
         holder.recyclerView.setHasFixedSize(true);
-        myDCTurnoutRecyclerAdapter = new MyDCTurnoutRecyclerAdapter(mContext, mListDatas.get(dc));
+        myDCTurnoutRecyclerAdapter = new MyDCTurnoutRecyclerAdapter(mContext, mListDatas.get(dc), mDepot);
         holder.recyclerView.setAdapter(myDCTurnoutRecyclerAdapter);
 
         mDcItemTouchHelper = new ItemTouchHelper(onDCItemTouchCallback);

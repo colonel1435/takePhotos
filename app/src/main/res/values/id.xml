@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="btSetPositionIndex"></item>
+    <item type="id" name="btBackPositionIndex"></item>
+    <item type="id" name="ivSetPositionIndex"></item>
+    <item type="id" name="ivBackPositionIndex"></item>
+    <item type="id" name="btSetPositionContent"></item>
+    <item type="id" name="btBackPositionContent"></item>
+    <item type="id" name="ivSetPositionContent"></item>
+    <item type="id" name="ivBackPositionContent"></item>
+</resources>

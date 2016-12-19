@@ -38,7 +38,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sunland.utils.CustomUtils.splitString;
 
 public class DepotActivity extends AppCompatActivity {
 
@@ -47,12 +46,14 @@ public class DepotActivity extends AppCompatActivity {
     public static final String DEPOT_KEY = "depot";
     public static final String DC_KEY   = "DC";
     public static final String DC_ITEM_KEY   = "DC_ITEM";
+    public static final String DC_THUMB_KEY = "DC_THUMB";
     public static final String DC_ITEM_SEP  = ":";
     public static final String DC_THUMB_SEP  = "-";
     public static final String DC_STATUS_SEP  = "|";
     public static final String FILE_NAME_SEP = "_";
     public static final String DC_ITEM_MAX_KEY = "max";
     private static final int TAKE_PHOTOS = 0;
+    private static final int SAVE_PHOTOS = 1;
     private static final String TAG = "wumin";
     public static final String ZOOM_PHOTO_KEY = "ZOOM";
     public static final String DC_LIST = "dc_item";
@@ -203,21 +204,27 @@ public class DepotActivity extends AppCompatActivity {
                     DCInfo dcInfo = new DCInfo();
                     dcInfo.setDC(dc);
                     String dcItem = strs[i];
-                    if (dcItem.indexOf(DC_STATUS_SEP) != -1) {
-                        String[] thumbs = dcItem.split(DC_STATUS_SEP);
-                        for (String thumb : thumbs) {
-                            if (thumb.indexOf(getString(R.string.dc_set_position)) != -1) {
-                                dcInfo.setSetThumb(thumb);
-                            }
-                            if (thumb.indexOf(getString(R.string.dc_back_position)) != -1) {
-                                dcInfo.setBackThumb(thumb);
-                            } else {
-                                dcInfo.setItem(thumb);
-                            }
-                        }
-                    } else {
-                        dcInfo.setItem(dcItem);
-                    }
+                    dcInfo.setItem(dcItem);
+                    String setStatus = sp.getString(dc+dcItem+getString(R.string.dc_set_position), "");
+                    dcInfo.setSetThumb(setStatus);
+                    String backStatus = sp.getString(dc+dcItem+getString(R.string.dc_back_position), "");
+                    dcInfo.setSetThumb(backStatus);
+//                    if (dcItem.indexOf(DC_STATUS_SEP) != -1) {
+//                        String[] thumbs = dcItem.split(DC_STATUS_SEP);
+//                        for (String thumb : thumbs) {
+//                            if (thumb.indexOf(getString(R.string.dc_set_position)) != -1) {
+//                                dcInfo.setSetThumb(thumb);
+//                            }
+//                            if (thumb.indexOf(getString(R.string.dc_back_position)) != -1) {
+//                                dcInfo.setBackThumb(thumb);
+//                            } else {
+//                                dcInfo.setItem(thumb);
+//                            }
+//                        }
+//                    } else {
+//                        dcInfo.setItem(dcItem);
+//                    }
+
                     itemList.add(dcInfo);
                 }
                 Items.put(dc, itemList);
@@ -260,8 +267,8 @@ public class DepotActivity extends AppCompatActivity {
         return jpgName;
     }
     public void onBtSetPositionClick(View view) {
-        String dc = view.getTag(MyDCTurnoutRecyclerAdapter.VIEW_CONTENT_KEY).toString();
-        currentButtonPosition = (int)view.getTag(MyDCTurnoutRecyclerAdapter.VIEW_POSITION_KEY);
+        String dc = view.getTag(R.id.btSetPositionContent).toString();
+        currentButtonPosition = (int)view.getTag(R.id.btSetPositionIndex);
         fileName = createPhotoName(DC_PHOTO_TYPE, dc, getString(R.string.dc_set_position));
         imgName = imgDir + fileName;
         Log.i(TAG, "ID -> " + view.getId() + " File -> " + fileName);
@@ -271,8 +278,8 @@ public class DepotActivity extends AppCompatActivity {
     }
 
     public void onBtBackPositionClick(View view) {
-        String dc = view.getTag(MyDCTurnoutRecyclerAdapter.VIEW_CONTENT_KEY).toString();
-        currentButtonPosition = (int)view.getTag(MyDCTurnoutRecyclerAdapter.VIEW_POSITION_KEY);
+        String dc = view.getTag(R.id.btBackPositionContent).toString();
+        currentButtonPosition = (int)view.getTag(R.id.btBackPositionIndex);
         fileName = createPhotoName(DC_PHOTO_TYPE, dc, getString(R.string.dc_back_position));
         imgName = imgDir + fileName;
         Log.i(TAG, "ID -> " + view.getId() + " File -> " + fileName);
@@ -313,8 +320,8 @@ public class DepotActivity extends AppCompatActivity {
     }
 
     public void onThumbClick(View view) {
-        String thumb = (String)view.getTag(MyDCTurnoutRecyclerAdapter.VIEW_CONTENT_KEY);
-        int position = (int)view.getTag(MyDCTurnoutRecyclerAdapter.VIEW_POSITION_KEY);
+        String thumb = null;
+//        int position = (int)view.getTag(MyDCTurnoutRecyclerAdapter.VIEW_POSITION_KEY);
         if (thumb != null) {
             Toast.makeText(mContext, "SHOW THUMB -> " + thumb, Toast.LENGTH_LONG).show();
         } else {
@@ -402,43 +409,26 @@ public class DepotActivity extends AppCompatActivity {
         List<String> strItems = CustomUtils.splitString(path, FILE_NAME_SEP);
         String strItem = strItems.get(2);
         String strStatus = strItems.get(3);
-        String dcNum = strItem.substring(0, strItem.indexOf(getString(R.string.dc_id_postfix)));
+        String dcNum = strItem.substring(0, strItem.indexOf(getString(R.string.dc_id_postfix))+1);
+        Log.i(TAG, "ALL -> " + strItems.toString() + "\nDC -> " + strItem + "\nStatus -> " + strStatus + " DC -> " + dcNum + " Path ->" + path);
         List<DCInfo> dcItems = mData.get(dcNum);
-        if (strStatus == getString(R.string.dc_set_position)) {
+        SharedPreferences sp = getSharedPreferences(depot, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        String thumb;
+        if (strStatus.equals(getString(R.string.dc_set_position))) {
             dcItems.get(currentButtonPosition).setSetThumb(path);
+            thumb = strItem + getString(R.string.dc_set_position);
+            Log.i(TAG, "Update setposition -> " + thumb);
         } else {
             dcItems.get(currentButtonPosition).setBackThumb(path);
+            thumb = strItem + getString(R.string.dc_back_position);
+            Log.i(TAG, "Update Backposition -> " + thumb);
         }
+        editor.putString(thumb, path).commit();
 
-        Log.i(TAG, "ALL -> " + strItems.toString() + "\nDC -> " + strItem + "\nStatus -> " + strStatus + " DC -> " + dcNum + " Path ->" + path);
         myDCRecyclerAdapter.notifyDataSetChanged();
         myDCRecyclerAdapter.refreshChildView();
-
-//        SharedPreferences sp = getSharedPreferences(depot, MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sp.edit();
-//        String content = sp.getString(DC_KEY, "");
-//        int beginPos = content.indexOf(dcNum);
-//        String itemContent = content.substring(beginPos, content.indexOf(DC_ITEM_SEP, beginPos));
-//        int dcStatus = itemContent.indexOf(DC_STATUS_SEP);
-
     }
-
-
-    public  Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            int id = msg.what;
-            String path = (String)msg.obj;
-            switch (id) {
-                case SHOW_THUMB:
-                    onRefreshThumb(path);
-                    onSaveFinished();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -476,7 +466,12 @@ public class DepotActivity extends AppCompatActivity {
                 intent.putExtra(ClipImageActivity.PHOTONAME_KEY, fileName);
                 intent.putExtra(ClipImageActivity.PHOTOFILE_KEY, imgName);
                 intent.putExtra(ClipImageActivity.DEPOT_KEY, depot);
-                startActivity(intent);
+                startActivityForResult(intent, SAVE_PHOTOS);
+            }
+            if (requestCode == SAVE_PHOTOS) {
+                Log.i(TAG, "Save photo finished...");
+                String thumb = data.getStringExtra(ZOOM_PHOTO_KEY);
+                onRefreshThumb(thumb);
             }
         }
         imgName = "";

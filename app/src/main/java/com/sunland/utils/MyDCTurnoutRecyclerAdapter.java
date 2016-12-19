@@ -1,6 +1,8 @@
 package com.sunland.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.provider.ContactsContract;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +28,7 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
     private List<DCInfo> mListDatas = null;
     private OnItemClickListener mListener;
     private Context mContext;
+    private String mDepot;
 
     public static final int VIEW_POSITION_KEY = 0;
     public static final int VIEW_CONTENT_KEY = 1;
@@ -36,9 +39,10 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.mListener = listener;
     }
-    public MyDCTurnoutRecyclerAdapter(Context context, List<DCInfo> list) {
+    public MyDCTurnoutRecyclerAdapter(Context context, List<DCInfo> list, String depot) {
         this.mContext = context;
         this.mListDatas = list;
+        this.mDepot = depot;
     }
     @Override
     public MyDCTurnoutRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -55,15 +59,24 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
         String dcBackThumb = mListDatas.get(position).getBackThumb();
         Log.i(TAG, "Position -> " + position + " DC -> " + dc + " dcItem -> " + dcItem + " setThumb -> " + dcSetThumb + " backThumb -> " + dcBackThumb);
         holder.tvDcItem.setText(dcItem);
+        SharedPreferences sp = mContext.getSharedPreferences(mDepot, Context.MODE_PRIVATE);
+        String setThumb = sp.getString(dc+dcItem+mContext.getString(R.string.dc_set_position),"");
+        if (setThumb != "") {
+            holder.ivSetThumb.setImageBitmap(BitmapFactory.decodeFile(setThumb));
+        }
+        String backThumb = sp.getString(dc+dcItem+mContext.getString(R.string.dc_back_position), "");
+        if (backThumb != "") {
+            holder.ivBackThumb.setImageBitmap(BitmapFactory.decodeFile(backThumb));
+        }
 
-        holder.ibSetPosition.setTag(VIEW_POSITION_KEY, position);
-        holder.ibSetPosition.setTag(VIEW_CONTENT_KEY, dc+dcItem);
-        holder.ibBackPosition.setTag(VIEW_POSITION_KEY, position);
-        holder.ibBackPosition.setTag(VIEW_CONTENT_KEY, dc+dcItem);
-        holder.ivSetThumb.setTag(VIEW_POSITION_KEY, position);
-        holder.ivSetThumb.setTag(VIEW_CONTENT_KEY, dcSetThumb);
-        holder.ivBackThumb.setTag(VIEW_POSITION_KEY, position);
-        holder.ivBackThumb.setTag(VIEW_CONTENT_KEY, dcBackThumb);
+        holder.ibSetPosition.setTag(R.id.btSetPositionIndex, position);
+        holder.ibSetPosition.setTag(R.id.btSetPositionContent, dc+dcItem);
+        holder.ibBackPosition.setTag(R.id.btBackPositionIndex, position);
+        holder.ibBackPosition.setTag(R.id.btBackPositionContent, dc+dcItem);
+        holder.ivSetThumb.setTag(R.id.ivSetPositionIndex, position);
+        holder.ivSetThumb.setTag(R.id.ivSetPositionContent, dcSetThumb);
+        holder.ivBackThumb.setTag(R.id.ivBackPositionIndex, position);
+        holder.ivBackThumb.setTag(R.id.ivBackPositionContent, dcBackThumb);
 
         if(mListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {

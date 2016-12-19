@@ -4,11 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.sunland.signalinspect.ActionSearchActivity;
+import com.sunland.signalinspect.DepotActivity;
 import com.sunland.signalinspect.SearchInfo;
 
 import java.io.ByteArrayOutputStream;
@@ -74,11 +76,12 @@ public class CustomUtils {
     }
 
     public static Bitmap getImageThumbnail(String img, int width, int height) {
-        Bitmap bmp = null;
-        String path = ActionSearchActivity.workDir + img;
+        String workDir = Environment.getExternalStorageDirectory() + DepotActivity.WORK_DIR;
+        String path = workDir + img;
+        Log.i(TAG, "Path -> " + path + " Thumb -> " + img);
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        bmp = BitmapFactory.decodeFile(path, options);
+        Bitmap bmp = BitmapFactory.decodeFile(path, options);
         options.inJustDecodeBounds = false;
         int h = options.outHeight;
         int w = options.outWidth;
@@ -97,7 +100,8 @@ public class CustomUtils {
         bmp = BitmapFactory.decodeFile(path, options);
         bmp = ThumbnailUtils.extractThumbnail(bmp, width, height, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
 
-        String thumbFile = ActionSearchActivity.workDir + ActionSearchActivity.THUMBNAIL_LABEL + img;
+        String thumbFile = workDir + ActionSearchActivity.THUMBNAIL_LABEL + img;
+        Log.i(TAG, "ThumbFile -> " + thumbFile);
         File file = new File(thumbFile);
         if (file.exists())
             file.delete();
