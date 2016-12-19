@@ -18,7 +18,9 @@
     <string name="dc_take_photo">拍照</string>
     <string name="dc_preview">预览</string>
     <string name="dc_name_suffix">道岔</string>
+    <string name="dc_id_postfix">号</string>
     <string name="dc_name_postfix">机</string>
+    <string name="dc_item_name_postfix">尖</string>
     <string name="dc_other_photos">其他照片</string>
     <string name="dc_id">道岔号</string>
     <string name="dc_position">位置</string>
@@ -26,7 +28,11 @@
     <string name="other_photo">照片名称</string>
     <string name="other_photo_msg">请输入照片名称</string>
     <string name="dc_item_name">道岔号</string>
-    <string name="dc_item_name_msg">请输入道岔号(例如: 1#2机)</string>
+    <string name="dc_item_name_msg">请输入道岔号(例如: 1号)</string>
+    <string name="dc_item_turnout_name">转折机数</string>
+    <string name="dc_item_turnout_name_msg">请输入转折机数量</string>
+    <string name="dc_item_null">请输入道岔号</string>
+    <string name="dc_turnout_item_null">请输入转折机数量</string>
     <string name="notification_msg_title">温馨提示</string>
     <string name="msg_ok">确定</string>
     <string name="msg_photo_null">请输入照片名称</string>
@@ -38,6 +44,7 @@
     <string name="menu_search">查找</string>
     <string name="menu_add">添加</string>
     <string name="save_finished">数据采集已完成</string>
+    <string name="show_thumb_null">该设备暂时未拍照，无预览图</string>
 
     <string name="title_activity_splash">SplashActivity</string>
 

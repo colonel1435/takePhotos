@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -17,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import java.util.List;
  */
 public class CustomUtils {
 
+    public static final String TAG = "wumin";
     public static final String JPG_POSTFIX = ".jpg";
     public static String getCurTime(String format) {
         SimpleDateFormat sDateFormat = new SimpleDateFormat(format);
@@ -32,6 +35,19 @@ public class CustomUtils {
         return now;
     }
 
+    public static List<String> splitString(String src, String sep) {
+        String[] strs = src.split(sep);
+        return Arrays.asList(strs);
+    }
+    public static String delStr2End(String src, String begin, String end) {
+        int lenSrc = src.length();
+        int beginPos = src.indexOf(begin);
+        int endPos = src.indexOf(end, beginPos);
+        String newString = src.substring(0, beginPos) + src.substring(endPos+1, lenSrc);
+        Log.i(TAG, "LEN SRC -> " + lenSrc + " begin -> " + beginPos + " end -> " + endPos + " new ->" + newString);
+
+        return newString;
+    }
     public static String delStr(String src, String delStr) {
             int postion = src.indexOf(delStr);
             int lenSrc = src.length();

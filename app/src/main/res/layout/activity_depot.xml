@@ -44,9 +44,7 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dialog_depot_left_margin"
-        android:layout_marginRight="@dimen/dialog_depot_right_margin"
-        app:cardBackgroundColor="@color/colorLightGrey">
+        app:cardBackgroundColor="@color/colorPrimary">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,11 +56,12 @@
                 android:gravity="center"
                 android:layout_gravity="center"
                 android:text="@string/dc_id"
-                android:textSize="@dimen/dc_item_title_size"/>
+                android:textSize="@dimen/dc_item_title_size"
+                android:textColor="@color/colorWhite"/>
             <View
                 android:layout_width="2dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorWhite"/>
+                android:background="@color/colorLightGrey"/>
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -79,24 +78,26 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/dc_set_position"
-                        android:textSize="@dimen/dc_item_title_size"/>
+                        android:textSize="@dimen/dc_item_title_size"
+                        android:textColor="@color/colorWhite"/>
                     <View
                         android:layout_width="2dp"
                         android:layout_height="match_parent"
-                        android:background="@color/colorWhite"/>
+                        android:background="@color/colorLightGrey"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/dc_back_position"
-                        android:textSize="@dimen/dc_item_title_size"/>
+                        android:textSize="@dimen/dc_item_title_size"
+                        android:textColor="@color/colorWhite"/>
 
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="@color/colorWhite"/>
+                    android:background="@color/colorLightGrey"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -113,23 +114,25 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="@string/dc_take_photo"
-                            android:textSize="@dimen/dc_item_title_size"/>
+                            android:textSize="@dimen/dc_item_title_size"
+                            android:textColor="@color/colorWhite"/>
                         <View
                             android:layout_width="2dp"
                             android:layout_height="match_parent"
-                            android:background="@color/colorWhite"/>
+                            android:background="@color/colorLightGrey"/>
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="@string/dc_preview"
-                            android:textSize="@dimen/dc_item_title_size"/>
+                            android:textSize="@dimen/dc_item_title_size"
+                            android:textColor="@color/colorWhite"/>
                     </LinearLayout>
                     <View
                         android:layout_width="2dp"
                         android:layout_height="match_parent"
-                        android:background="@color/colorWhite"/>
+                        android:background="@color/colorLightGrey"/>
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -140,18 +143,20 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="@string/dc_take_photo"
-                            android:textSize="@dimen/dc_item_title_size"/>
+                            android:textSize="@dimen/dc_item_title_size"
+                            android:textColor="@color/colorWhite"/>
                         <View
                             android:layout_width="2dp"
                             android:layout_height="match_parent"
-                            android:background="@color/colorWhite"/>
+                            android:background="@color/colorLightGrey"/>
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="@string/dc_preview"
-                            android:textSize="@dimen/dc_item_title_size"/>
+                            android:textSize="@dimen/dc_item_title_size"
+                            android:textColor="@color/colorWhite"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -161,18 +166,16 @@
     <ScrollView
         android:id="@+id/scrollView_dc"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dialog_depot_left_margin"
-        android:layout_marginRight="@dimen/dialog_depot_right_margin">
+        android:layout_height="match_parent">
         <LinearLayout
             android:id="@+id/listview_dc_item"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_dc_item"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:orientation="vertical">
             </android.support.v7.widget.RecyclerView>

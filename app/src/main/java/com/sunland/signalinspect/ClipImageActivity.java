@@ -1,13 +1,16 @@
 package com.sunland.signalinspect;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.sunland.view.ClipImageLayout;
 
@@ -69,17 +72,23 @@ public class ClipImageActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+                Message msg = DepotActivity.mHandler.obtainMessage();
+                msg.what = DepotActivity.SHOW_THUMB;
+                msg.obj = photoFile;
+                DepotActivity.mHandler.sendMessage(msg);
+//                SharedPreferences sp = getSharedPreferences(mDepot, MODE_PRIVATE);
+//                SharedPreferences.Editor editor = sp.edit();
 //                Intent intent = new Intent(ClipImageActivity.this, showImageActivity.class);
 //                startActivity(intent);
-                dbDir = DepotActivity.imgDir + mDepot + DB_POSTFIX;
+//                dbDir = DepotActivity.imgDir + mDepot + DB_POSTFIX;
 
-                Intent saveImg = new Intent();
-                saveImg.setAction(ACTION_SAVE_IMG);
-                saveImg.putExtra(PHOTONAME_KEY, photoName);
-                saveImg.putExtra(PHOTOFILE_KEY, photoFile);
-                saveImg.putExtra(PHOTODB_KEY, dbDir);
-                Log.i(TAG, "Photo name -> " + photoName + " Photo file -> " + photoFile + " DB ->" + dbDir);
-                startService(saveImg);
+//                Intent saveImg = new Intent();
+//                saveImg.setAction(ACTION_SAVE_IMG);
+//                saveImg.putExtra(PHOTONAME_KEY, photoName);
+//                saveImg.putExtra(PHOTOFILE_KEY, photoFile);
+//                saveImg.putExtra(PHOTODB_KEY, dbDir);
+//                Log.i(TAG, "Photo name -> " + photoName + " Photo file -> " + photoFile + " DB ->" + dbDir);
+//                startService(saveImg);
                 ClipImageActivity.this.finish();
             }
         });

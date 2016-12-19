@@ -6,6 +6,7 @@
     <dimen name="title_size">16sp</dimen>
     <dimen name="edit_size">12sp</dimen>
     <dimen name="dc_title_size">18sp</dimen>
+    <dimen name="dc_item_size">24sp</dimen>
     <dimen name="dc_item_title_size">16sp</dimen>
     <dimen name="depot_title_size">20sp</dimen>
     <dimen name="dialog_depot_top_margin">10dp</dimen>

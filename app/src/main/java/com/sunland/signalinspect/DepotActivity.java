@@ -1,16 +1,15 @@
 package com.sunland.signalinspect;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
-import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,27 +24,21 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sunland.utils.CustomUtils;
 import com.sunland.utils.MyDCRecyclerAdapter;
-import com.sunland.utils.MyDividerItemDecoration;
-import com.sunland.utils.MyGridDividerItemDecoration;
-import com.sunland.view.MyGridLayoutManager;
-import com.sunland.view.MyLinearLayoutManager;
+import com.sunland.utils.MyDCTurnoutRecyclerAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.zip.Inflater;
+
+import static com.sunland.utils.CustomUtils.splitString;
 
 public class DepotActivity extends AppCompatActivity {
 
@@ -55,6 +48,9 @@ public class DepotActivity extends AppCompatActivity {
     public static final String DC_KEY   = "DC";
     public static final String DC_ITEM_KEY   = "DC_ITEM";
     public static final String DC_ITEM_SEP  = ":";
+    public static final String DC_THUMB_SEP  = "-";
+    public static final String DC_STATUS_SEP  = "|";
+    public static final String FILE_NAME_SEP = "_";
     public static final String DC_ITEM_MAX_KEY = "max";
     private static final int TAKE_PHOTOS = 0;
     private static final String TAG = "wumin";
@@ -64,7 +60,9 @@ public class DepotActivity extends AppCompatActivity {
     private static final int OTHER_PHOTO_TYPE = 1;
     private static final String FILE_TYPE = "image/*";
     private static String SCAN_PATH = "";
+    public static final int SHOW_THUMB = 1;
 
+    public static int currentButtonPosition = -1;
     public static String imgName = "";
     public static String imgDir = "";
     private static String fileName = "";
@@ -79,7 +77,8 @@ public class DepotActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private MyDCRecyclerAdapter myDCRecyclerAdapter;
     private ItemTouchHelper mItemTouchHelper;
-    List<String> mData;
+
+    ArrayMap<String, List<DCInfo>> mData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,8 +119,11 @@ public class DepotActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setHasFixedSize(true);
-        mData = getData();
-        myDCRecyclerAdapter = new MyDCRecyclerAdapter(mData);
+
+        mData = new ArrayMap<>();
+        getData(mData);
+
+        myDCRecyclerAdapter = new MyDCRecyclerAdapter(mData, mContext, depot);
         mRecyclerView.setAdapter(myDCRecyclerAdapter);
 
         mItemTouchHelper = new ItemTouchHelper(onItemTouchCallback);
@@ -132,6 +134,7 @@ public class DepotActivity extends AppCompatActivity {
         btBackPosition = (ImageButton) itemView.findViewById(R.id.dc_back_position);
 
     }
+
 
     private ItemTouchHelper.Callback onItemTouchCallback = new ItemTouchHelper.Callback() {
         @Override
@@ -164,49 +167,80 @@ public class DepotActivity extends AppCompatActivity {
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
             int position = viewHolder.getAdapterPosition();
             myDCRecyclerAdapter.notifyItemRemoved(position);
-            String delStr = mData.get(position) + DC_ITEM_SEP;
-//            Log.i(TAG, "Remove ITEM -> " + position + " " + delStr);
-            mData.remove(position);
+
+            String dc = mData.keyAt(position);
+            mData.remove(dc);
 
             SharedPreferences sp = getSharedPreferences(depot, MODE_PRIVATE);
             SharedPreferences.Editor editor = sp.edit();
-            String item_name = sp.getString(DC_ITEM_KEY, "");
-            item_name = CustomUtils.delStr(item_name, delStr);
-            editor.putString(DC_ITEM_KEY, item_name).commit();
+            String item_name = sp.getString(DC_KEY, "");
+            item_name = CustomUtils.delStr2End(item_name, dc, DC_ITEM_SEP);
+            editor.putString(DC_KEY, item_name).commit();
+            Log.i(TAG, "Remove ITEM -> " + position + " str -> " + item_name);
 
         }
     };
 
-    public List<String> getData() {
+    public void getData(ArrayMap<String, List<DCInfo>> Items) {
         File file = new File(Environment.getDataDirectory() + getPackageName().toString()
                 + "/shared_prefs", depot + "_" + DC_LIST + ".xml");
         if (file.exists()) {
             file.delete();
         }
-        String dc_name;
+        String dc_name = "";
         String item_name = "";
-        List<String> list = new ArrayList<>();
         SharedPreferences sp = getSharedPreferences(depot, MODE_PRIVATE);
-        item_name = sp.getString(DC_ITEM_KEY, "");
+        item_name = sp.getString(DC_KEY, "");
         if (item_name != "") {
-            String[] items = item_name.split(DC_ITEM_SEP);
-            list = new ArrayList<String>(Arrays.asList(items));
-            Log.i(TAG, "DC ITEM -> " + list.toString());
+            String[] turnouts = item_name.split(DC_ITEM_SEP);
+            Items.clear();
+            for (String str : turnouts) {
+                Log.i(TAG, "ITEM -> " + str);
+                String[] strs = str.split(DC_THUMB_SEP);
+                String dc = strs[0];
+                List<DCInfo> itemList = new ArrayList<>();
+                for (int i = 1; i < strs.length; i++) {
+                    DCInfo dcInfo = new DCInfo();
+                    dcInfo.setDC(dc);
+                    String dcItem = strs[i];
+                    if (dcItem.indexOf(DC_STATUS_SEP) != -1) {
+                        String[] thumbs = dcItem.split(DC_STATUS_SEP);
+                        for (String thumb : thumbs) {
+                            if (thumb.indexOf(getString(R.string.dc_set_position)) != -1) {
+                                dcInfo.setSetThumb(thumb);
+                            }
+                            if (thumb.indexOf(getString(R.string.dc_back_position)) != -1) {
+                                dcInfo.setBackThumb(thumb);
+                            } else {
+                                dcInfo.setItem(thumb);
+                            }
+                        }
+                    } else {
+                        dcInfo.setItem(dcItem);
+                    }
+                    itemList.add(dcInfo);
+                }
+                Items.put(dc, itemList);
+            }
         } else {
+            String tmp = "";
             SharedPreferences.Editor editor = sp.edit();
             for (int i = 1; i < dc_num + 1; i++) {
+                tmp = i + getString(R.string.dc_id_postfix);
+                dc_name += tmp;
+                List<DCInfo> dcList = new ArrayList<>();
                 for (int j = 1; j < dc_item_max + 1; j++) {
-                    dc_name = i + "#";
-                    dc_name += j + getString(R.string.dc_name_postfix);
-                    list.add(dc_name);
-                    item_name += dc_name;
-                    item_name += DC_ITEM_SEP;
+                    String dcItem = getString(R.string.dc_item_name_postfix) + j;
+                    dc_name += DC_THUMB_SEP + dcItem;
+                    DCInfo dcInfo = new DCInfo(tmp, dcItem, "", "");
+                    Log.i(TAG, "Add DC ITEM -> " + dcItem);
+                    dcList.add(dcInfo);
                 }
+                dc_name += DC_ITEM_SEP;
+                Items.put(tmp, dcList);
             }
-            editor.putString(DC_ITEM_KEY, item_name).commit();
+            editor.putString(DC_KEY, dc_name).commit();
         }
-
-        return list;
     }
 
     public String createPhotoName(int type, String val, String status) {
@@ -226,20 +260,22 @@ public class DepotActivity extends AppCompatActivity {
         return jpgName;
     }
     public void onBtSetPositionClick(View view) {
-        String dc = view.getTag().toString();
+        String dc = view.getTag(MyDCTurnoutRecyclerAdapter.VIEW_CONTENT_KEY).toString();
+        currentButtonPosition = (int)view.getTag(MyDCTurnoutRecyclerAdapter.VIEW_POSITION_KEY);
         fileName = createPhotoName(DC_PHOTO_TYPE, dc, getString(R.string.dc_set_position));
         imgName = imgDir + fileName;
-        Log.i(TAG, "File -> " + fileName);
+        Log.i(TAG, "ID -> " + view.getId() + " File -> " + fileName);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(imgName)));
         startActivityForResult(intent, TAKE_PHOTOS);
     }
 
     public void onBtBackPositionClick(View view) {
-        String dc = (String)view.getTag().toString();
+        String dc = view.getTag(MyDCTurnoutRecyclerAdapter.VIEW_CONTENT_KEY).toString();
+        currentButtonPosition = (int)view.getTag(MyDCTurnoutRecyclerAdapter.VIEW_POSITION_KEY);
         fileName = createPhotoName(DC_PHOTO_TYPE, dc, getString(R.string.dc_back_position));
         imgName = imgDir + fileName;
-        Log.i(TAG, "File -> " + fileName);
+        Log.i(TAG, "ID -> " + view.getId() + " File -> " + fileName);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(imgName)));
         startActivityForResult(intent, TAKE_PHOTOS);
@@ -276,6 +312,15 @@ public class DepotActivity extends AppCompatActivity {
                 .create().show();
     }
 
+    public void onThumbClick(View view) {
+        String thumb = (String)view.getTag(MyDCTurnoutRecyclerAdapter.VIEW_CONTENT_KEY);
+        int position = (int)view.getTag(MyDCTurnoutRecyclerAdapter.VIEW_POSITION_KEY);
+        if (thumb != null) {
+            Toast.makeText(mContext, "SHOW THUMB -> " + thumb, Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(mContext, getString(R.string.show_thumb_null), Toast.LENGTH_LONG).show();
+        }
+    }
     private void showFileBrowser() {
 //        Toast.makeText(mContext, "浏览文件", Toast.LENGTH_LONG).show();
         Uri uri = Uri.fromFile(new File(imgDir));
@@ -297,7 +342,8 @@ public class DepotActivity extends AppCompatActivity {
 
     private void addDC() {
         final View popupView =  LayoutInflater.from(mContext).inflate(R.layout.dialog_dc_item, null);
-        final EditText etPhoto = (EditText)popupView.findViewById(R.id.et_dc_item);
+        final EditText etDC = (EditText)popupView.findViewById(R.id.et_dc_item);
+        final EditText etTurnout = (EditText)popupView.findViewById(R.id.et_dc_turnout_item);
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle(R.string.notification_msg_title)
                 .setView(popupView)
@@ -310,21 +356,38 @@ public class DepotActivity extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.depot_new), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String val = etPhoto.getText().toString();
+                        String val = etDC.getText().toString();
                         if (val.length() == 0) {
-                            Toast.makeText(mContext, getString(R.string.msg_photo_null), Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, getString(R.string.dc_item_null), Toast.LENGTH_LONG).show();
                             return;
                         }
-                        mData.add(val);
+                        String turnout = etTurnout.getText().toString();
+                        if (turnout.length() == 0) {
+                            Toast.makeText(mContext, getString(R.string.dc_turnout_item_null), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        String addStr = val;
+                        List<DCInfo> list = new ArrayList<>();
+                        int itemSize = Integer.parseInt(turnout);
+                        for (int i = 1; i < itemSize+1; i++) {
+                            String itemStr = getString(R.string.dc_item_name_postfix)+i;
+                            DCInfo info = new DCInfo();
+                            info.setDC(val);
+                            info.setItem(itemStr);
+                            list.add(info);
+                            addStr += DC_THUMB_SEP + itemStr;
+                        }
+                        mData.put(val, list);
                         myDCRecyclerAdapter.notifyDataSetChanged();
 
                         SharedPreferences sp = getSharedPreferences(depot, MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
-                        String item_name = sp.getString(DC_ITEM_KEY, "");
-                        item_name += val;
+                        String item_name = sp.getString(DC_KEY, "");
+                        item_name += addStr;
                         item_name += DC_ITEM_SEP;
-                        editor.putString(DC_ITEM_KEY, item_name).commit();
-
+                        editor.putString(DC_KEY, item_name).commit();
+                        Log.i(TAG, "NEW str -> " + item_name);
                         CustomUtils.hideKeyboard(popupView);
                     }
                 })
@@ -335,6 +398,47 @@ public class DepotActivity extends AppCompatActivity {
         Toast.makeText(mContext, mContext.getString(R.string.save_finished), Toast.LENGTH_LONG).show();
     }
 
+    public void onRefreshThumb(String path) {
+        List<String> strItems = CustomUtils.splitString(path, FILE_NAME_SEP);
+        String strItem = strItems.get(2);
+        String strStatus = strItems.get(3);
+        String dcNum = strItem.substring(0, strItem.indexOf(getString(R.string.dc_id_postfix)));
+        List<DCInfo> dcItems = mData.get(dcNum);
+        if (strStatus == getString(R.string.dc_set_position)) {
+            dcItems.get(currentButtonPosition).setSetThumb(path);
+        } else {
+            dcItems.get(currentButtonPosition).setBackThumb(path);
+        }
+
+        Log.i(TAG, "ALL -> " + strItems.toString() + "\nDC -> " + strItem + "\nStatus -> " + strStatus + " DC -> " + dcNum + " Path ->" + path);
+        myDCRecyclerAdapter.notifyDataSetChanged();
+        myDCRecyclerAdapter.refreshChildView();
+
+//        SharedPreferences sp = getSharedPreferences(depot, MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sp.edit();
+//        String content = sp.getString(DC_KEY, "");
+//        int beginPos = content.indexOf(dcNum);
+//        String itemContent = content.substring(beginPos, content.indexOf(DC_ITEM_SEP, beginPos));
+//        int dcStatus = itemContent.indexOf(DC_STATUS_SEP);
+
+    }
+
+
+    public  Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            int id = msg.what;
+            String path = (String)msg.obj;
+            switch (id) {
+                case SHOW_THUMB:
+                    onRefreshThumb(path);
+                    onSaveFinished();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
