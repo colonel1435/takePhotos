@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="@string/dc_item_add"
+        android:textSize="@dimen/dc_item_title_size"
         android:textColor="@color/colorWhite"
         android:background="@color/colorCadeBlue"
         android:onClick="onDcAdd"/>
@@ -29,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="@string/dc_item_del"
+        android:textSize="@dimen/dc_item_title_size"
         android:textColor="@color/colorWhite"
         android:background="@color/colorCadeBlue"
         android:onClick="onDcDel"/>
@@ -43,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="@string/dc_item_modify"
+        android:textSize="@dimen/dc_item_title_size"
         android:textColor="@color/colorWhite"
         android:background="@color/colorCadeBlue"
         android:onClick="onDcModify"/>

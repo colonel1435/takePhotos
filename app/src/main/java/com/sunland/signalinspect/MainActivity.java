@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
@@ -34,12 +35,14 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String TAG = "wumin";
     public static final String DEPOT_LIST = "depot";
     public static final String DEPOT_KEY = "depot_name";
     public static final String DEPOT_TIME_KEY = "time";
     public static final String DC_NUM = "dc_num";
     public static final String DC_ITEM_MAX = "dc_item_max";
     private static final String formatter = "yyyy-MM-dd HH:mm";
+
 
     private RecyclerView mRecyclerView;
     private MyDepotRecyclerAdapter myRecyclerAdapter;
@@ -56,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
 
         mContext = this;
         initView();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.i(TAG, "onRestart");
+        mData = getData();
+        myRecyclerAdapter.notifyDataSetChanged();
     }
 
     void initView() {
@@ -123,11 +134,11 @@ public class MainActivity extends AppCompatActivity {
                 file.delete();
             }
 
-            File depotFile = new File(Environment.getDataDirectory() + getPackageName().toString()
-                    + "/shared_prefs", depot + "_" + DepotActivity.DC_LIST + ".xml");
-            if (depotFile.exists()) {
-                depotFile.delete();
-            }
+//            File depotFile = new File(Environment.getDataDirectory() + getPackageName().toString()
+//                    + "/shared_prefs", DepotActivity.DC_LIST + ".xml");
+//            if (depotFile.exists()) {
+//                depotFile.delete();
+//            }
 
         }
     };
@@ -163,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
             depot.setDcNum(getString(R.string.dc_num_title) + cfgMap.get(key).toString());
             depot.setDate(time);
 
+            Log.i(TAG, "Depot -> " + key + " Num -> " + cfgMap.get(key));
             mData.add(depot);
         }
         return mData;
@@ -200,14 +212,13 @@ public class MainActivity extends AppCompatActivity {
                             return;
                         }
                         SharedPreferences spList = getSharedPreferences(DEPOT_LIST, MODE_PRIVATE);
-                        int tmp = spList.getInt(depotName, 0);
-                        if(tmp != 0) {
+                        int tmp = spList.getInt(depotName, -1);
+                        if(tmp != -1) {
                             Toast.makeText(mContext, getString(R.string.msg_depot_again), Toast.LENGTH_LONG).show();
                             return;
                         }
                         SharedPreferences.Editor editorList = spList.edit();
-                        editorList.putInt(depotName, Integer.parseInt(dcNum));
-                        editorList.commit();
+                        editorList.putInt(depotName, Integer.parseInt(dcNum)).commit();
 
                         SharedPreferences spDepot = getSharedPreferences(depotName, MODE_PRIVATE);
                         SharedPreferences.Editor editor = spDepot.edit();

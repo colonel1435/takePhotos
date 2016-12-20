@@ -137,6 +137,7 @@ public class MyDCRecyclerAdapter extends RecyclerView.Adapter<MyDCRecyclerAdapte
             content = CustomUtils.addStrFromBegin(content, DepotActivity.DC_THUMB_SEP + item, dcItem, parent);
 //            Log.i(TAG, "Content -> " + content);
             SharedPreferences.Editor editor = sp.edit();
+            editor.putInt(item, 1);
             editor.putString(DepotActivity.DC_KEY, content).commit();
         }
     }
@@ -152,6 +153,7 @@ public class MyDCRecyclerAdapter extends RecyclerView.Adapter<MyDCRecyclerAdapte
             content = CustomUtils.delStrFromBegin(content, DepotActivity.DC_THUMB_SEP + dcItem, parent);
 //            Log.i(TAG, "Content -> " + content);
             SharedPreferences.Editor editor = sp.edit();
+            editor.putInt(dcItem, 0);
             editor.putString(DepotActivity.DC_KEY, content).commit();
         }
 

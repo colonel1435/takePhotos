@@ -51,6 +51,7 @@ public class DepotActivity extends AppCompatActivity {
     public static final String DEPOT_KEY = "depot";
     public static final String DC_KEY   = "DC";
     public static final String DC_ITEM_KEY   = "DC_ITEM";
+    public static final String DC_TURNOUT_KEY   = "DC_TURNOUT";
     public static final String DC_THUMB_KEY = "DC_THUMB";
     public static final String DC_ITEM_SEP  = ":";
     public static final String DC_THUMB_SEP  = "-";
@@ -184,7 +185,15 @@ public class DepotActivity extends AppCompatActivity {
             String item_name = sp.getString(DC_KEY, "");
             item_name = CustomUtils.delStr2End(item_name, dc, DC_ITEM_SEP);
             editor.putString(DC_KEY, item_name).commit();
-            Log.i(TAG, "Remove ITEM -> " + position + " str -> " + item_name);
+            int itemNum  = sp.getInt(MainActivity.DC_NUM, -1);
+            if (itemNum != -1) {
+                itemNum -= 1;
+                editor.putInt(MainActivity.DC_NUM, itemNum).commit();
+                SharedPreferences spMain = getSharedPreferences(MainActivity.DEPOT_LIST, MODE_PRIVATE);
+                SharedPreferences.Editor mainEditor = spMain.edit();
+                mainEditor.putInt(depot, itemNum).commit();
+            }
+
 
         }
     };
@@ -234,11 +243,14 @@ public class DepotActivity extends AppCompatActivity {
                     DCInfo dcInfo = new DCInfo(tmp, dcItem, "", "");
                     Log.i(TAG, "Add DC ITEM -> " + dcItem);
                     dcList.add(dcInfo);
+                    editor.putInt(dcItem, 1);
+
                 }
                 dc_name += DC_ITEM_SEP;
                 Items.put(tmp, dcList);
             }
-            editor.putString(DC_KEY, dc_name).commit();
+            editor.putString(DC_KEY, dc_name);
+            editor.commit();
         }
     }
 
@@ -402,6 +414,7 @@ public class DepotActivity extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.depot_new), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        CustomUtils.hideKeyboard(popupView);
                         String val = etDC.getText().toString();
                         if (val.length() == 0) {
                             Toast.makeText(mContext, getString(R.string.dc_item_null), Toast.LENGTH_LONG).show();
@@ -413,28 +426,40 @@ public class DepotActivity extends AppCompatActivity {
                             return;
                         }
 
-                        String addStr = val + getString(R.string.dc_name_postfix);
+                        String addStr = val + getString(R.string.dc_id_postfix);
+                        SharedPreferences sp = getSharedPreferences(depot, MODE_PRIVATE);
+                        String item_name = sp.getString(DC_KEY, "");
+                        if (item_name.indexOf(addStr) != -1) {
+                            Toast.makeText(mContext, getString(R.string.msg_dc_again), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
                         List<DCInfo> list = new ArrayList<>();
                         int itemSize = Integer.parseInt(turnout);
                         for (int i = 1; i < itemSize+1; i++) {
                             String itemStr = getString(R.string.dc_item_name_postfix)+i;
                             DCInfo info = new DCInfo();
-                            info.setDC(val);
+                            info.setDC(val+getString(R.string.dc_id_postfix));
                             info.setItem(itemStr);
                             list.add(info);
                             addStr += DC_THUMB_SEP + itemStr;
                         }
-                        mData.put(val, list);
+                        mData.put(val+getString(R.string.dc_id_postfix), list);
                         myDCRecyclerAdapter.notifyDataSetChanged();
 
-                        SharedPreferences sp = getSharedPreferences(depot, MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
-                        String item_name = sp.getString(DC_KEY, "");
                         item_name += addStr;
                         item_name += DC_ITEM_SEP;
                         editor.putString(DC_KEY, item_name).commit();
-                        Log.i(TAG, "NEW str -> " + item_name);
-                        CustomUtils.hideKeyboard(popupView);
+
+                        int itemNum = sp.getInt(MainActivity.DC_NUM, -1);
+                        if (itemNum != -1) {
+                            itemNum ++;
+                            editor.putInt(MainActivity.DC_NUM, itemNum).commit();
+                            SharedPreferences spMain = getSharedPreferences(MainActivity.DEPOT_LIST, MODE_PRIVATE);
+                            SharedPreferences.Editor mainEditor = spMain.edit();
+                            mainEditor.putInt(depot, itemNum).commit();
+                        }
                     }
                 })
                 .create().show();
@@ -477,6 +502,7 @@ public class DepotActivity extends AppCompatActivity {
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new ColorDrawable(1));
+        popupWindow.setAnimationStyle(R.style.popwindow_anim_style);
         popupWindow.showAtLocation(view, Gravity.BOTTOM, 0 ,0);
     }
     public void onDcAdd(View view) {
@@ -495,11 +521,20 @@ public class DepotActivity extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.depot_new), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        CustomUtils.hideKeyboard(popupView);
                         String val = etItem.getText().toString();
                         if (val.length() == 0) {
                             Toast.makeText(mContext, getString(R.string.dc_item_null), Toast.LENGTH_LONG).show();
                             return;
                         }
+                        SharedPreferences sp = getSharedPreferences(depot, MODE_PRIVATE);
+                        int ret = sp.getInt(val, 0);
+                        if (ret != 0) {
+                            Toast.makeText(mContext, getString(R.string.msg_dc_item), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putInt(val, 1);
                         int position = (int)currentView.getTag(R.id.tvTurnoutPositionIndex);
                         String parent = currentView.getTag(R.id.tvTurnoutParentContent).toString();
                         myDCRecyclerAdapter.addChildView(position, parent, val);
@@ -526,6 +561,7 @@ public class DepotActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         int position = (int)currentView.getTag(R.id.tvTurnoutPositionIndex);
                         String parent = currentView.getTag(R.id.tvTurnoutParentContent).toString();
+
                         myDCRecyclerAdapter.delChildView(position, parent);
                         getData(mData);
                         myDCRecyclerAdapter.notifyDataSetChanged();
@@ -558,6 +594,7 @@ public class DepotActivity extends AppCompatActivity {
                             Toast.makeText(mContext, getString(R.string.dc_item_null), Toast.LENGTH_LONG).show();
                             return;
                         }
+                        CustomUtils.hideKeyboard(popupView);
                         int position = (int)currentView.getTag(R.id.tvTurnoutPositionIndex);
                         String parent = currentView.getTag(R.id.tvTurnoutParentContent).toString();
                         myDCRecyclerAdapter.modifyChildView(position, parent, val);
