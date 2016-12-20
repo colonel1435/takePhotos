@@ -19,7 +19,7 @@
             android:layout_marginBottom="@dimen/dialog_depot_bottom_margin"
             android:layout_marginLeft="@dimen/dialog_depot_left_margin"
             android:text="@string/dc_item_turnout_modify_item_old"
-            android:textSize="@dimen/dc_title_size"/>
+            android:textSize="@dimen/dc_item_turnout_size"/>
         <TextView
             android:id="@+id/tv_dc_item_mod_old"
             android:layout_width="wrap_content"
@@ -27,7 +27,7 @@
             android:layout_marginTop="@dimen/dialog_depot_top_margin"
             android:layout_marginBottom="@dimen/dialog_depot_bottom_margin"
             android:layout_marginLeft="@dimen/dialog_depot_left_margin"
-            android:textSize="@dimen/dc_title_size"/>
+            android:textSize="@dimen/dc_item_turnout_size"/>
     </LinearLayout>
 
     <LinearLayout
@@ -43,7 +43,7 @@
             android:layout_marginBottom="@dimen/dialog_depot_bottom_margin"
             android:layout_marginLeft="@dimen/dialog_depot_left_margin"
             android:text="@string/dc_item_turnout_modify_item_new"
-            android:textSize="@dimen/dc_title_size"/>
+            android:textSize="@dimen/dc_item_turnout_size"/>
         <EditText
             android:id="@+id/et_dc_item_mod_new"
             android:layout_width="wrap_content"

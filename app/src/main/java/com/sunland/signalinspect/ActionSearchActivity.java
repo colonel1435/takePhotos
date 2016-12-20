@@ -31,6 +31,8 @@ import android.widget.Toast;
 
 import com.sunland.utils.CustomUtils;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -49,6 +51,7 @@ public class ActionSearchActivity extends AppCompatActivity {
     private static final String TAG = "wumin";
     private Toolbar toolbar;
     private LinearLayout mMulSelectLayout;
+    private TextView mSearchResult;
     private SearchView mSearchView;
     private ListView mListView;
     private ListView mHistoryView;
@@ -93,6 +96,7 @@ public class ActionSearchActivity extends AppCompatActivity {
 //        actionMenuView.getMenu().clear();
 //        getMenuInflater().inflate(R.menu.multi_select_menu, actionMenuView.getMenu());
 
+        mSearchResult = (TextView) findViewById(R.id.action_search_result);
         mSearchView = (SearchView)findViewById(R.id.action_search);
         mSearchView.setIconifiedByDefault(false);
         mSearchView.setSubmitButtonEnabled(false);
@@ -176,6 +180,7 @@ public class ActionSearchActivity extends AppCompatActivity {
     private AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            mSearchResult.setVisibility(View.VISIBLE);
             mSearchView.setVisibility(View.INVISIBLE);
             mMulSelectLayout.setVisibility(View.VISIBLE);
             mode = MULTIPLE_CHOICE;
@@ -294,6 +299,7 @@ public class ActionSearchActivity extends AppCompatActivity {
             mAdapter.notifyDataSetChanged();
             mMulSelectLayout.setVisibility(GONE);
         }
+        mSearchResult.setVisibility(View.GONE);
         mSearchView.setVisibility(View.VISIBLE);
         toolbar.setTitle("");
     }

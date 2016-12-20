@@ -19,10 +19,18 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <ListView
+                android:id="@+id/listview_search"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:visibility="gone">
+            </ListView>
             <LinearLayout
                 android:id="@+id/llayout_multiple_select"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:layout_marginBottom="@dimen/button_bottom_margin"
                 android:visibility="gone">
                 <Button
                     android:layout_width="0dp"
@@ -57,13 +65,6 @@
                     android:text="@string/cancal_select"
                     android:onClick="onSelectCancle"/>
             </LinearLayout>
-            <ListView
-                android:id="@+id/listview_search"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:visibility="gone">
-            </ListView>
 
         </LinearLayout>
         <LinearLayout
@@ -75,6 +76,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/button_top_margin"
                 android:layout_marginLeft="@dimen/dialog_depot_left_margin"
                 android:layout_marginRight="@dimen/dialog_depot_right_margin">
                 <Button

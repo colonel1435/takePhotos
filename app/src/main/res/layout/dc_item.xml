@@ -4,7 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/colorWhite"
+    app:cardBackgroundColor="@color/colorLightGrey"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="1dp"
+    app:cardMaxElevation="1dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true"
     tools:context=".DepotActivity">
 
     <LinearLayout
@@ -26,7 +31,7 @@
         <View
             android:layout_width="2dp"
             android:layout_height="match_parent"
-            android:background="@color/colorLightGrey"/>
+            android:background="@color/colorWhite"/>
 
 
        <LinearLayout
@@ -40,7 +45,7 @@
                android:layout_height="wrap_content"
                android:layout_weight="1"
                android:src="@drawable/take_photos"
-               android:background="@color/colorWhite"
+               android:background="@color/colorLightGrey"
                android:onClick="onBtSetPositionClick"/>
 
            <ImageView
@@ -50,12 +55,13 @@
                android:layout_weight="1"
                android:layout_marginTop="@dimen/button_top_margin"
                android:layout_marginBottom="@dimen/button_bottom_margin"
+               android:layout_marginRight="1dp"
                android:onClick="onSetThumbClick"/>
        </LinearLayout>
        <View
            android:layout_width="2dp"
            android:layout_height="match_parent"
-           android:background="@color/colorLightGrey"/>
+           android:background="@color/colorWhite"/>
        <LinearLayout
            android:layout_width="0dp"
            android:layout_height="wrap_content"
@@ -67,7 +73,7 @@
                android:layout_height="wrap_content"
                android:layout_weight="1"
                android:src="@drawable/take_photos"
-               android:background="@color/colorWhite"
+               android:background="@color/colorLightGrey"
                android:onClick="onBtBackPositionClick"/>
 
            <ImageView
@@ -78,6 +84,7 @@
                android:layout_gravity="center_vertical"
                android:layout_marginTop="@dimen/button_top_margin"
                android:layout_marginBottom="@dimen/button_bottom_margin"
+               android:layout_marginRight="1dp"
                android:onClick="onBackThumbClick"/>
        </LinearLayout>
     </LinearLayout>

@@ -106,7 +106,7 @@ public class DepotActivity extends AppCompatActivity {
     private void initView() {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_depot_bar);
-        toolbar.setTitle("");
+//        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -156,7 +156,8 @@ public class DepotActivity extends AppCompatActivity {
                 swipeFlags = 0;
             } else {
                 dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-                swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+//                swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+                swipeFlags = 0;
             }
             return makeMovementFlags(dragFlags, swipeFlags);
         }

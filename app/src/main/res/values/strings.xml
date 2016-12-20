@@ -40,6 +40,7 @@
     <string name="dc_turnout_item_null">请输入转折机数量</string>
     <string name="notification_msg_title">温馨提示</string>
     <string name="msg_ok">确定</string>
+    <string name="action_search_result_title">搜索结果</string>
     <string name="msg_photo_null">请输入照片名称</string>
     <string name="msg_depot_null">请输入站名</string>
     <string name="msg_dc_null">请输入道岔数量</string>
