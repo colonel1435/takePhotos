@@ -41,6 +41,34 @@ public class CustomUtils {
         String[] strs = src.split(sep);
         return Arrays.asList(strs);
     }
+
+    public static String replaceStrFromBegin(String src, String newVal, String oldVal, String parent) {
+        int lenSrc = src.length();
+        int beginPos = src.indexOf(parent);
+        int endPos = src.indexOf(DepotActivity.DC_ITEM_SEP, beginPos);
+        String item = src.substring(beginPos, endPos);
+        item = item.replace(oldVal, newVal);
+        Log.i(TAG, "ITEM -> " + item);
+        String newString = src.substring(0, beginPos) + item + src.substring(endPos, lenSrc);
+        return newString;
+    }
+    public static String addStrFromBegin(String src, String addStr, String before, String begin) {
+        int beginPos = src.indexOf(begin);
+        int postion = src.indexOf(before, beginPos) + before.length();
+        int lenSrc = src.length();
+        String newString = src.substring(0,postion) + addStr + src.substring(postion, lenSrc);
+
+        return newString;
+    }
+    public static String delStrFromBegin(String src, String delStr, String begin) {
+        int beginPos = src.indexOf(begin);
+        int postion = src.indexOf(delStr, beginPos);
+        int lenSrc = src.length();
+        int lenDel = delStr.length();
+        String newString = src.substring(0,postion) + src.substring(postion + lenDel, lenSrc);
+
+        return newString;
+    }
     public static String delStr2End(String src, String begin, String end) {
         int lenSrc = src.length();
         int beginPos = src.indexOf(begin);

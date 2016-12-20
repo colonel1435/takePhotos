@@ -11,6 +11,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
     private static final String TAG = "wumin";
     private List<DCInfo> mListDatas = null;
     private OnItemClickListener mListener;
+    private View.OnLongClickListener mLongListener;
     private Context mContext;
     private String mDepot;
 
@@ -35,10 +37,15 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
 
     public interface OnItemClickListener {
         void OnItemClick(View view, int position);
+        void OnItemLongClick(View view, int position);
     }
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.mListener = listener;
     }
+    public void setOnItemLongCliclListener(View.OnLongClickListener listener) {
+        this.mLongListener = listener;
+    }
+
     public MyDCTurnoutRecyclerAdapter(Context context, List<DCInfo> list, String depot) {
         this.mContext = context;
         this.mListDatas = list;
@@ -69,6 +76,8 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
             holder.ivBackThumb.setImageBitmap(BitmapFactory.decodeFile(backThumb));
         }
 
+        holder.tvDcItem.setTag(R.id.tvTurnoutPositionIndex, position);
+        holder.tvDcItem.setTag(R.id.tvTurnoutParentContent, dc);
         holder.ibSetPosition.setTag(R.id.btSetPositionIndex, position);
         holder.ibSetPosition.setTag(R.id.btSetPositionContent, dc+dcItem);
         holder.ibBackPosition.setTag(R.id.btBackPositionIndex, position);
@@ -78,6 +87,7 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
         holder.ivBackThumb.setTag(R.id.ivBackPositionIndex, position);
         holder.ivBackThumb.setTag(R.id.ivBackPositionContent, dcBackThumb);
 
+        /*
         if(mListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -86,7 +96,16 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
                     mListener.OnItemClick(holder.itemView, pos);
                 }
             });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int pos = holder.getLayoutPosition();
+                    mListener.OnItemLongClick(holder.itemView, pos);
+                    return true;
+                }
+            });
         }
+        */
     }
 
     @Override
@@ -94,14 +113,17 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
         return mListDatas  == null ? 0:mListDatas.size();
     }
 
+
     public void addData(int position, DCInfo dc) {
         mListDatas.add(position, dc);
         notifyItemInserted(position);
     }
 
     public void removeData(int position) {
-        mListDatas.remove(position);
+        Log.i(TAG, "Del position ->" + position);
+//        mListDatas.remove(position);
         notifyItemRemoved(position);
+//        notifyDataSetChanged();
     }
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -121,7 +143,7 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
         }
         public void bindData(String item) {
             if (item != null) {
-                tvDcItem.setText(item);
+//                tvDcItem.setText(item);
 //                ibSetPosition.setTag(item);
 //                ibBackPosition.setTag(item);
 //                ivSetThumb.setTag(item);

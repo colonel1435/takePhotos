@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -21,12 +22,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +69,7 @@ public class DepotActivity extends AppCompatActivity {
     public static final int SHOW_THUMB = 1;
 
     public static int currentButtonPosition = -1;
+    public static TextView currentView = null;
     public static String imgName = "";
     public static String imgDir = "";
     private static String fileName = "";
@@ -79,6 +84,7 @@ public class DepotActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private MyDCRecyclerAdapter myDCRecyclerAdapter;
     private ItemTouchHelper mItemTouchHelper;
+    private PopupWindow popupWindow;
 
     ArrayMap<String, List<DCInfo>> mData;
 
@@ -257,7 +263,6 @@ public class DepotActivity extends AppCompatActivity {
         currentButtonPosition = (int)view.getTag(R.id.btSetPositionIndex);
         fileName = createPhotoName(DC_PHOTO_TYPE, dc, getString(R.string.dc_set_position));
         imgName = imgDir + fileName;
-        Log.i(TAG, "ID -> " + view.getId() + " File -> " + fileName);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(imgName)));
         startActivityForResult(intent, TAKE_PHOTOS);
@@ -268,7 +273,6 @@ public class DepotActivity extends AppCompatActivity {
         currentButtonPosition = (int)view.getTag(R.id.btBackPositionIndex);
         fileName = createPhotoName(DC_PHOTO_TYPE, dc, getString(R.string.dc_back_position));
         imgName = imgDir + fileName;
-        Log.i(TAG, "ID -> " + view.getId() + " File -> " + fileName);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(imgName)));
         startActivityForResult(intent, TAKE_PHOTOS);
@@ -409,7 +413,7 @@ public class DepotActivity extends AppCompatActivity {
                             return;
                         }
 
-                        String addStr = val;
+                        String addStr = val + getString(R.string.dc_name_postfix);
                         List<DCInfo> list = new ArrayList<>();
                         int itemSize = Integer.parseInt(turnout);
                         for (int i = 1; i < itemSize+1; i++) {
@@ -463,6 +467,106 @@ public class DepotActivity extends AppCompatActivity {
 
         myDCRecyclerAdapter.notifyDataSetChanged();
         myDCRecyclerAdapter.refreshChildView();
+    }
+
+    public void onTurnoutClick(View view) {
+        currentView = (TextView) view;
+        View popupView = LayoutInflater.from(mContext).inflate(R.layout.dialog_dc_turnout, null);
+        popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(1));
+        popupWindow.showAtLocation(view, Gravity.BOTTOM, 0 ,0);
+    }
+    public void onDcAdd(View view) {
+        popupWindow.dismiss();
+        final View popupView =  LayoutInflater.from(mContext).inflate(R.layout.dialog_dc_turnout_add, null);
+        final EditText etItem = (EditText)popupView.findViewById(R.id.et_dc_add_item);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(R.string.notification_msg_title)
+                .setView(popupView)
+                .setNegativeButton(getString(R.string.depot_cancle), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton(getString(R.string.depot_new), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String val = etItem.getText().toString();
+                        if (val.length() == 0) {
+                            Toast.makeText(mContext, getString(R.string.dc_item_null), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        int position = (int)currentView.getTag(R.id.tvTurnoutPositionIndex);
+                        String parent = currentView.getTag(R.id.tvTurnoutParentContent).toString();
+                        myDCRecyclerAdapter.addChildView(position, parent, val);
+                        getData(mData);
+                        myDCRecyclerAdapter.notifyDataSetChanged();
+                        Toast.makeText(mContext, getString(R.string.dc_item_add_msg), Toast.LENGTH_LONG).show();
+                    }
+                })
+                .create().show();
+    }
+    public void onDcDel(View view) {
+        popupWindow.dismiss();
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(R.string.notification_msg_title)
+                .setMessage(getString(R.string.dc_item_del_msg_ok))
+                .setNegativeButton(getString(R.string.depot_cancle), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton(getString(R.string.msg_ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int position = (int)currentView.getTag(R.id.tvTurnoutPositionIndex);
+                        String parent = currentView.getTag(R.id.tvTurnoutParentContent).toString();
+                        myDCRecyclerAdapter.delChildView(position, parent);
+                        getData(mData);
+                        myDCRecyclerAdapter.notifyDataSetChanged();
+                        Toast.makeText(mContext, getString(R.string.dc_item_del_msg) , Toast.LENGTH_LONG).show();
+                    }
+                })
+                .create().show();
+    }
+    public void onDcModify(View view) {
+        popupWindow.dismiss();
+        final String oldVal = currentView.getText().toString();
+        final View popupView =  LayoutInflater.from(mContext).inflate(R.layout.dialog_dc_turnout_modify, null);
+        final TextView tvItemOld = (TextView)popupView.findViewById(R.id.tv_dc_item_mod_old);
+        tvItemOld.setText(oldVal);
+        final EditText etItem = (EditText)popupView.findViewById(R.id.et_dc_item_mod_new);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(R.string.notification_msg_title)
+                .setView(popupView)
+                .setNegativeButton(getString(R.string.depot_cancle), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton(getString(R.string.msg_ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String val = etItem.getText().toString();
+                        if (val.length() == 0) {
+                            Toast.makeText(mContext, getString(R.string.dc_item_null), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        int position = (int)currentView.getTag(R.id.tvTurnoutPositionIndex);
+                        String parent = currentView.getTag(R.id.tvTurnoutParentContent).toString();
+                        myDCRecyclerAdapter.modifyChildView(position, parent, val);
+                        getData(mData);
+                        myDCRecyclerAdapter.notifyDataSetChanged();
+                        Toast.makeText(mContext, getString(R.string.dc_item_modify_msg), Toast.LENGTH_LONG).show();
+                    }
+                })
+                .create().show();
     }
 
     @Override

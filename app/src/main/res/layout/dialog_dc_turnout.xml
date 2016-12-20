@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dialog_depot_top_margin"
+    android:layout_marginBottom="@dimen/dialog_depot_top_margin"
+    android:background="@color/colorCadeBlue"
+    tools:context="com.sunland.signalinspect.DepotActivity">
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/dc_item_add"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorCadeBlue"
+        android:onClick="onDcAdd"/>
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/button_top_margin"
+        android:layout_marginBottom="@dimen/button_bottom_margin"
+        android:background="@color/colorWhite"/>
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/dc_item_del"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorCadeBlue"
+        android:onClick="onDcDel"/>
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/button_top_margin"
+        android:layout_marginBottom="@dimen/button_bottom_margin"
+        android:background="@color/colorWhite"/>
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/dc_item_modify"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorCadeBlue"
+        android:onClick="onDcModify"/>
+
+
+</LinearLayout>

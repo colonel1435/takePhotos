@@ -28,9 +28,14 @@
     <string name="other_photo">照片名称</string>
     <string name="other_photo_msg">请输入照片名称</string>
     <string name="dc_item_name">道岔号</string>
-    <string name="dc_item_name_msg">请输入道岔号(例如: 1号)</string>
+    <string name="dc_item_name_msg">请输入道岔号</string>
     <string name="dc_item_turnout_name">转折机数</string>
     <string name="dc_item_turnout_name_msg">请输入转折机数量</string>
+    <string name="dc_item_turnout_add_item">转折机号</string>
+    <string name="dc_item_turnout_add_item_msg">请输入转折机号(如：尖1， 星1)</string>
+    <string name="dc_item_turnout_modify_item_old">旧转折机号</string>
+    <string name="dc_item_turnout_modify_item_new">新转折机号</string>
+    <string name="dc_item_turnout_modify_item_msg">请输入新的转折机号</string>
     <string name="dc_item_null">请输入道岔号</string>
     <string name="dc_turnout_item_null">请输入转折机数量</string>
     <string name="notification_msg_title">温馨提示</string>
@@ -61,4 +66,12 @@
     <string name="select_reverse">反选</string>
     <string name="select_del">删除</string>
     <string name="cancal_select">取消</string>
+
+    <string name="dc_item_add">添加</string>
+    <string name="dc_item_del">删除</string>
+    <string name="dc_item_modify">修改</string>
+    <string name="dc_item_add_msg">添加转折机成功</string>
+    <string name="dc_item_del_msg">删除转折机成功</string>
+    <string name="dc_item_del_msg_ok">确认要删除该转折机吗？</string>
+    <string name="dc_item_modify_msg">修改转折机名称成功</string>
 </resources>
