@@ -11,4 +11,5 @@
     <item type="id" name="btBackPositionContent"></item>
     <item type="id" name="ivSetPositionContent"></item>
     <item type="id" name="ivBackPositionContent"></item>
+    <item type="id" name="ivBrowsePositionIndex"></item>
 </resources>
