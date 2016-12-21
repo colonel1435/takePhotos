@@ -73,6 +73,7 @@ public class MyDCRecyclerAdapter extends RecyclerView.Adapter<MyDCRecyclerAdapte
         String dc = mListDatas.keyAt(position);
         holder.bindData(dc);
         holder.itemView.setTag(dc);
+        holder.mDC.setTag(R.id.tvDCPositionIndex, position);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         holder.recyclerView.setItemAnimator(new DefaultItemAnimator());
         holder.recyclerView.setHasFixedSize(true);
@@ -187,7 +188,9 @@ public class MyDCRecyclerAdapter extends RecyclerView.Adapter<MyDCRecyclerAdapte
                 swipeFlags = 0;
             } else {
                 dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-                swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+//                swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+//                dragFlags = 0;
+                swipeFlags = 0;
             }
             return makeMovementFlags(dragFlags, swipeFlags);
         }

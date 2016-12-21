@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Environment;
@@ -86,6 +87,7 @@ public class DepotActivity extends AppCompatActivity {
     private MyDCRecyclerAdapter myDCRecyclerAdapter;
     private ItemTouchHelper mItemTouchHelper;
     private PopupWindow popupWindow;
+    private PopupWindow dcPopupWindow;
 
     ArrayMap<String, List<DCInfo>> mData;
 
@@ -155,8 +157,9 @@ public class DepotActivity extends AppCompatActivity {
                         | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
                 swipeFlags = 0;
             } else {
-                dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+//                dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
 //                swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+                dragFlags = 0;
                 swipeFlags = 0;
             }
             return makeMovementFlags(dragFlags, swipeFlags);
@@ -399,6 +402,45 @@ public class DepotActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onDcClick(View view) {
+        currentView = (TextView) view;
+        View popupView = LayoutInflater.from(mContext).inflate(R.layout.dialog_dc_popup, null);
+        dcPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        dcPopupWindow.setFocusable(true);
+        dcPopupWindow.setOutsideTouchable(true);
+        dcPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+        dcPopupWindow.setAnimationStyle(R.style.popwindow_dc_anim);
+
+        int popupWidth = dcPopupWindow.getWidth();
+        int popupHeight = dcPopupWindow.getHeight();
+        int width = currentView.getWidth();
+        int height = currentView.getHeight();
+        dcPopupWindow.showAsDropDown(currentView, (width - popupWidth) / 2, 0);
+//        dcPopupWindow.showAtLocation(view, Gravity.BOTTOM, 0 ,0);
+    }
+
+    public void onDcErase(View view) {
+        dcPopupWindow.dismiss();
+        int position = (int)currentView.getTag(R.id.tvDCPositionIndex);
+        String dc = mData.keyAt(position);
+        mData.remove(dc);
+        myDCRecyclerAdapter.notifyItemRemoved(position);
+
+        SharedPreferences sp = getSharedPreferences(depot, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        String item_name = sp.getString(DC_KEY, "");
+        item_name = CustomUtils.delStr2End(item_name, dc, DC_ITEM_SEP);
+        editor.putString(DC_KEY, item_name).commit();
+        int itemNum  = sp.getInt(MainActivity.DC_NUM, -1);
+        if (itemNum != -1) {
+            itemNum -= 1;
+            editor.putInt(MainActivity.DC_NUM, itemNum).commit();
+            SharedPreferences spMain = getSharedPreferences(MainActivity.DEPOT_LIST, MODE_PRIVATE);
+            SharedPreferences.Editor mainEditor = spMain.edit();
+            mainEditor.putInt(depot, itemNum).commit();
+        }
+    }
     private void addDC() {
         final View popupView =  LayoutInflater.from(mContext).inflate(R.layout.dialog_dc_item, null);
         final EditText etDC = (EditText)popupView.findViewById(R.id.et_dc_item);
@@ -498,7 +540,7 @@ public class DepotActivity extends AppCompatActivity {
     public void onTurnoutClick(View view) {
         currentView = (TextView) view;
         View popupView = LayoutInflater.from(mContext).inflate(R.layout.dialog_dc_turnout, null);
-        popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,
+        popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);

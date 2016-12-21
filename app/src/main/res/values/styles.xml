@@ -44,4 +44,15 @@
         <!-- 指定消失时的动画xml -->
     </style>
 
+    <style name="popwindow_dc_anim">
+        <item name="android:windowEnterAnimation">@anim/fade_in</item>
+        <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
+
+    <style name="pop_text_style">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">5dp</item>
+    </style>
+
 </resources>

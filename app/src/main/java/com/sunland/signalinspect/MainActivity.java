@@ -103,7 +103,8 @@ public class MainActivity extends AppCompatActivity {
                 swipeFlags = 0;
             } else {
                 dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-                swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+                swipeFlags = 0;
+//                swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
             }
             return makeMovementFlags(dragFlags, swipeFlags);
         }

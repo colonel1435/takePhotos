@@ -1,54 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dialog_depot_top_margin"
-    android:layout_marginBottom="@dimen/dialog_depot_top_margin"
-    android:background="@color/colorCadeBlue"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/colorWhite"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="1dp"
+    app:cardMaxElevation="1dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true"
     tools:context="com.sunland.signalinspect.DepotActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <Button
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/dc_item_add"
-        android:textSize="@dimen/dc_item_title_size"
-        android:textColor="@color/colorWhite"
-        android:background="@color/colorCadeBlue"
-        android:onClick="onDcAdd"/>
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/button_top_margin"
-        android:layout_marginBottom="@dimen/button_bottom_margin"
-        android:background="@color/colorWhite"/>
-    <Button
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/dc_item_del"
-        android:textSize="@dimen/dc_item_title_size"
-        android:textColor="@color/colorWhite"
-        android:background="@color/colorCadeBlue"
-        android:onClick="onDcDel"/>
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/button_top_margin"
-        android:layout_marginBottom="@dimen/button_bottom_margin"
-        android:background="@color/colorWhite"/>
-    <Button
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/dc_item_modify"
-        android:textSize="@dimen/dc_item_title_size"
-        android:textColor="@color/colorWhite"
-        android:background="@color/colorCadeBlue"
-        android:onClick="onDcModify"/>
-
-
-</LinearLayout>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/dc_item_add"
+            android:textSize="@dimen/dc_item_title_size"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorCadeBlue"
+            android:onClick="onDcAdd"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/button_top_margin"
+            android:layout_marginBottom="@dimen/button_bottom_margin"
+            android:background="@color/colorWhite"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/dc_item_del"
+            android:textSize="@dimen/dc_item_title_size"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorCadeBlue"
+            android:onClick="onDcDel"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/button_top_margin"
+            android:layout_marginBottom="@dimen/button_bottom_margin"
+            android:background="@color/colorWhite"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/dc_item_modify"
+            android:textSize="@dimen/dc_item_title_size"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorCadeBlue"
+            android:onClick="onDcModify"/>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

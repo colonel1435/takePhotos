@@ -7,7 +7,7 @@
     <dimen name="edit_size">12sp</dimen>
     <dimen name="dc_title_size">18sp</dimen>
     <dimen name="dc_item_turnout_size">16sp</dimen>
-    <dimen name="dc_item_size">24sp</dimen>
+    <dimen name="dc_item_size">20sp</dimen>
     <dimen name="dc_item_title_size">16sp</dimen>
     <dimen name="depot_title_size">20sp</dimen>
     <dimen name="dialog_depot_top_margin">10dp</dimen>
@@ -27,4 +27,5 @@
     <dimen name="list_item_height">48dp</dimen>
     <dimen name="thumb_width">64dp</dimen>
     <dimen name="thumb_height">64dp</dimen>
+    <dimen name="card_radius">5dp</dimen>
 </resources>

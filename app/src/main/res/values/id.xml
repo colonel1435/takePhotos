@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item type="id" name="tvDCPositionIndex"></item>
     <item type="id" name="tvTurnoutPositionIndex"></item>
     <item type="id" name="tvTurnoutParentContent"></item>
     <item type="id" name="btSetPositionIndex"></item>
