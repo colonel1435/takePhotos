@@ -29,6 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.sunland.utils.CustomUtils;
 
 import org.w3c.dom.Text;
@@ -364,12 +365,11 @@ public class ActionSearchActivity extends AppCompatActivity {
             String thumbFile = thumbDir + text;
             File thumb = new File(thumbFile);
             Bitmap bmp = null;
-            if (thumb.exists()) {
-                bmp = BitmapFactory.decodeFile(thumbFile);
-            } else {
+            if (!thumb.exists()) {
                 bmp = CustomUtils.getImageThumbnail(text, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
             }
-            ivItem.setImageBitmap(bmp);
+            Glide.with(mContext).load(thumb).crossFade().into(ivItem);
+//            ivItem.setImageBitmap(bmp);
 
             TextView item = (TextView) convertView.findViewById(R.id.tv_action_search_item);
             if (!text.isEmpty() && text.contains(usrInput)) {

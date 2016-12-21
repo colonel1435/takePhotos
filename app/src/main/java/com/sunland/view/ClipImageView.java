@@ -26,7 +26,7 @@ public class ClipImageView extends ImageView implements
 
 	private static final String TAG = ClipImageView.class.getSimpleName();
 	public static float SCALE_MAX = 4.0f;
-	private static float SCALE_MID = 2.0f;
+	private static float SCALE_MID = 0.3f;
 
 	/**
 	 * 初始化时的缩放比例，如果图片宽或高大于屏幕，此值将小于0

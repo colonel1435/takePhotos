@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.sunland.signalinspect.DCInfo;
 import com.sunland.signalinspect.R;
 import java.util.List;
@@ -69,11 +70,13 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
         SharedPreferences sp = mContext.getSharedPreferences(mDepot, Context.MODE_PRIVATE);
         String setThumb = sp.getString(dc+dcItem+mContext.getString(R.string.dc_set_position),"");
         if (setThumb != "") {
-            holder.ivSetThumb.setImageBitmap(BitmapFactory.decodeFile(setThumb));
+            Glide.with(mContext).load(setThumb).crossFade().into(holder.ivSetThumb);
+//            holder.ivSetThumb.setImageBitmap(BitmapFactory.decodeFile(setThumb));
         }
         String backThumb = sp.getString(dc+dcItem+mContext.getString(R.string.dc_back_position), "");
         if (backThumb != "") {
-            holder.ivBackThumb.setImageBitmap(BitmapFactory.decodeFile(backThumb));
+            Glide.with(mContext).load(backThumb).crossFade().into(holder.ivBackThumb);
+//            holder.ivBackThumb.setImageBitmap(BitmapFactory.decodeFile(backThumb));
         }
 
         holder.tvDcItem.setTag(R.id.tvTurnoutPositionIndex, position);

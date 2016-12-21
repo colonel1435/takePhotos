@@ -10,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
 import com.sunland.signalinspect.ClipImageActivity;
+
+import java.io.File;
 
 
 public class ClipImageLayout extends RelativeLayout
@@ -35,6 +38,7 @@ public class ClipImageLayout extends RelativeLayout
 
 		Bitmap bmp = BitmapFactory.decodeFile(ClipImageActivity.photoFile);
 		mZoomImageView.setImageBitmap(bmp);
+		Glide.with(context).load(new File(ClipImageActivity.photoFile)).crossFade().into(mZoomImageView);
 //		mZoomImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 //		mZoomImageView.setImageDrawable(getResources().getDrawable(R.drawable.bg));
 		

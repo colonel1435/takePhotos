@@ -18,6 +18,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView.ScaleType;
 
+import com.bumptech.glide.Glide;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache;
@@ -35,7 +36,7 @@ import static com.sunland.signalinspect.DepotActivity.WORK_DIR;
 public class BrowseImageActivity extends AppCompatActivity {
 	public static DisplayImageOptions mNormalImageOptions;
 	public static final String SDCARD_PATH = Environment.getExternalStorageDirectory().toString();
-	public static final String IMAGES_FOLDER = SDCARD_PATH + WORK_DIR + THUMBNAIL_LABEL;
+	public static final String IMAGES_FOLDER = SDCARD_PATH + WORK_DIR;
 	private GridView mGridView;
 
 	@Override
@@ -62,7 +63,7 @@ public class BrowseImageActivity extends AppCompatActivity {
 		config.memoryCacheSize(2*1024*1024);//设置内存缓存大小
 		config.diskCacheFileCount(50);//设置硬盘缓存文件数目
 		config.tasksProcessingOrder(QueueProcessingType.LIFO);
-		File cacheDir = new File(Environment.getExternalStorageDirectory()+"/SingnalInspect/cache");
+		File cacheDir = new File(Environment.getExternalStorageDirectory()+"/signalInspect/cache");
 		config.diskCache(new UnlimitedDiskCache(cacheDir));//自定义缓存路径
 		ImageLoader.getInstance().init(config.build());
 	}
@@ -94,7 +95,9 @@ public class BrowseImageActivity extends AppCompatActivity {
 		public View getView(final int position, View convertView, ViewGroup parent) {
 			final SquareCenterImageView imageView = new SquareCenterImageView(BrowseImageActivity.this);
 			imageView.setScaleType(ScaleType.CENTER_CROP);
-			imageView.setImageBitmap(BitmapFactory.decodeFile(datas.get(position)));
+//			imageView.setImageBitmap(BitmapFactory.decodeFile(datas.get(position)));
+			File photoFile = new File(datas.get(position));
+			Glide.with(BrowseImageActivity.this).load(photoFile).crossFade().into(imageView);
 //			ImageLoader.getInstance().displayImage("file://" + datas.get(position), imageView);
 			imageView.setOnClickListener(new View.OnClickListener() {
 				@Override

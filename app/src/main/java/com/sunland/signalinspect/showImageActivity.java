@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.sunland.utils.CustomUtils;
 import com.sunland.view.SmoothImageView;
 
@@ -43,7 +44,7 @@ public class showImageActivity extends Activity {
         imageView.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         setContentView(imageView);
-        rawPhoto = CustomUtils.delStr(mDatas.get(mPosition), THUMBNAIL_LABEL);
+        rawPhoto = mDatas.get(mPosition);
         imageView.setImageBitmap(BitmapFactory.decodeFile(rawPhoto));
         imageView.setupView();
     }
