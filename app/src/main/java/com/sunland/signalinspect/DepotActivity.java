@@ -36,6 +36,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sunland.utils.BitmapUtils;
 import com.sunland.utils.CustomUtils;
 import com.sunland.utils.MyDCRecyclerAdapter;
 import com.sunland.utils.MyDCTurnoutRecyclerAdapter;
@@ -367,7 +368,8 @@ public class DepotActivity extends AppCompatActivity {
         intent.setAction(android.content.Intent.ACTION_VIEW);
         intent.setDataAndType(uri, "image/*");
         startActivity(intent);
-        /*
+
+         /*
         Intent intent = new Intent(DepotActivity.this, DispalyImageActivity.class);
         int[] location = new int[2];
         view.getLocationOnScreen(location);
@@ -384,14 +386,19 @@ public class DepotActivity extends AppCompatActivity {
     }
 
     private void showFileBrowser() {
-//        Toast.makeText(mContext, "浏览文件", Toast.LENGTH_LONG).show();
-        Uri uri = Uri.fromFile(new File(imgDir));
-
-        Intent intent = new Intent();
-        intent.setAction(android.content.Intent.ACTION_VIEW);
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-        intent.setDataAndType(uri, "image/*");
-        startActivity(intent);
+//        Uri uri = Uri.fromFile(new File(imgDir));
+//        Intent intent = new Intent();
+//        intent.setAction(android.content.Intent.ACTION_VIEW);
+//        intent.setDataAndType(uri, "image/*");
+//        startActivity(intent);
+        List<String> datas = new ArrayList<>();
+        BitmapUtils.getBmpUrl(datas, BrowseImageActivity.IMAGES_FOLDER);
+        if (datas.size() == 0 ) {
+            Toast.makeText(mContext, getString(R.string.photo_null), Toast.LENGTH_LONG).show();
+        } else {
+            Intent intent = new Intent(DepotActivity.this, BrowseImageActivity.class);
+            startActivity(intent);
+        }
 
     }
 

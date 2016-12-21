@@ -50,10 +50,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".BrowseImageActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/browse_photo_title">
+        </activity>
         <activity
             android:name=".DispalyImageActivity"
-            android:theme="@style/AppTheme.Transparent">
-
+            android:theme="@style/ImageTheme.Transparent"
+            android:label="@string/browse_photo_title">
         </activity>
     </application>
 

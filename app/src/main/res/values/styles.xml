@@ -37,6 +37,16 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="ImageTheme.Basic" parent="android:Theme.Light">
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="ImageTheme.Transparent" parent="@style/ImageTheme.Basic">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <style name="popwindow_anim_style">
         <item name="android:windowEnterAnimation">@anim/popup_show</item>
          <!-- 指定显示时的动画xml -->

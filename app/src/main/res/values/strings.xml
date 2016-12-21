@@ -77,4 +77,7 @@
     <string name="dc_item_del_msg">删除转折机成功</string>
     <string name="dc_item_del_msg_ok">确认要删除该转折机吗？</string>
     <string name="dc_item_modify_msg">修改转折机名称成功</string>
+
+    <string name="browse_photo_title">照片浏览</string>
+    <string name="photo_null">您还未拍照，无法进行照片浏览</string>
 </resources>

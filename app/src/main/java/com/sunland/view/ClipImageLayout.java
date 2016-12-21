@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.sunland.signalinspect.ClipImageActivity;
@@ -28,12 +30,12 @@ public class ClipImageLayout extends RelativeLayout
 		mClipImageView = new ClipBorderView(context);
 
 		android.view.ViewGroup.LayoutParams lp = new LayoutParams(
-				android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-				android.view.ViewGroup.LayoutParams.MATCH_PARENT);
+				ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.MATCH_PARENT);
 
 		Bitmap bmp = BitmapFactory.decodeFile(ClipImageActivity.photoFile);
 		mZoomImageView.setImageBitmap(bmp);
-//		mZoomImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//		mZoomImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 //		mZoomImageView.setImageDrawable(getResources().getDrawable(R.drawable.bg));
 		
 		this.addView(mZoomImageView, lp);
