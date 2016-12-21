@@ -9,9 +9,15 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.FloatMath;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 
@@ -20,6 +26,7 @@ import android.widget.ImageView;
  */
 
 public class SmoothImageView extends ImageView {
+    private static final String TAG = "wumin";
     private static final int STATE_NORMAL = 0;
     private static final int STATE_TRANSFORM_IN = 1;
     private static final int STATE_TRANSFORM_OUT = 2;
@@ -29,26 +36,51 @@ public class SmoothImageView extends ImageView {
     private int mOriginalLocationY;
     private int mState = STATE_NORMAL;
     private Matrix mSmoothMatrix;
-    private Bitmap mBitmap;
+    private static Bitmap mBitmap;
     private boolean mTransformStart = false;
     private Transfrom mTransfrom;
     private final int mBgColor = 0xFF000000;
     private int mBgAlpha = 0;
     private Paint mPaint;
 
+    Matrix matrix = null;
+    Matrix savedMatrix = null;
+    Bitmap bmp = null;
+    /** Screen res */
+    private DisplayMetrics dm;
+    /** minimum scale ratio */
+    float minScaleR = 0.3f;
+    /** maximum scale ratio */
+    static final float MAX_SCALE = 15f;
+    /** init status */
+    static final int NONE = 0;
+    /** drag */
+    static final int DRAG = 1;
+    /** scale */
+    static final int ZOOM = 2;
+    /** current mode */
+    int mode = NONE;
+
+    /** Save res-x & res-y */
+    PointF prev = new PointF();
+    PointF mid = new PointF();
+    float dist = 1f;
     public SmoothImageView(Context context) {
         super(context);
         init();
+//        setupView(context);
     }
 
     public SmoothImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
+//        setupView(context);
     }
 
     public SmoothImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
+//        setupView(context);
     }
 
     private void init() {
@@ -57,6 +89,153 @@ public class SmoothImageView extends ImageView {
         mPaint.setColor(mBgColor);
         mPaint.setStyle(Paint.Style.FILL);
 //      setBackgroundColor(mBgColor);
+    }
+
+    public void setupView(){
+
+        matrix = new Matrix();
+        savedMatrix = new Matrix();
+
+        Context context = getContext();
+        // Screen res
+        dm = context.getResources().getDisplayMetrics();
+        BitmapDrawable bd = (BitmapDrawable)this.getDrawable();
+        if(bd != null){
+            bmp = bd.getBitmap();
+        }
+
+        if(bmp != null) {
+            center(true, true);
+        }
+
+        this.setImageMatrix(mSmoothMatrix);
+        this.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    // 主点按下
+                    case MotionEvent.ACTION_DOWN:
+                        savedMatrix.set(matrix);
+                        prev.set(event.getX(), event.getY());
+                        mode = DRAG;
+                        break;
+                    // 副点按下
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        dist = spacing(event);
+                        // 如果连续两点距离大于10，则判定为多点模式
+                        if (spacing(event) > 10f) {
+                            savedMatrix.set(matrix);
+                            midPoint(mid, event);
+                            mode = ZOOM;
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:{
+                        break;
+                    }
+                    case MotionEvent.ACTION_POINTER_UP:
+                        mode = NONE;
+                        //savedMatrix.set(matrix);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        SmoothImageView.this.setScaleType(ScaleType.MATRIX);
+                        if (mode == DRAG) {
+                            matrix.set(savedMatrix);
+                            matrix.postTranslate(event.getX() - prev.x, event.getY()
+                                    - prev.y);
+                        } else if (mode == ZOOM) {
+                            float newDist = spacing(event);
+                            if (newDist > 10f) {
+                                matrix.set(savedMatrix);
+                                float tScale = newDist / dist;
+                                matrix.postScale(tScale, tScale, mid.x, mid.y);
+                            }
+                        }
+                        break;
+                }
+                SmoothImageView.this.setImageMatrix(matrix);
+                CheckView();
+                return true;
+            }
+        });
+    }
+
+    /**
+     * horizontal & vertical center
+     */
+
+    protected void center(boolean horizontal, boolean vertical) {
+        Matrix m = new Matrix();
+        m.set(matrix);
+        RectF rect = new RectF(0, 0, bmp.getWidth(), bmp.getHeight());
+        m.mapRect(rect);
+
+        float height = rect.height();
+        float width = rect.width();
+
+        float deltaX = 0, deltaY = 0;
+
+        if (vertical) {
+            // 图片小于屏幕大小，则居中显示。大于屏幕，上方留空则往上移，下方留空则往下移
+            int screenHeight = dm.heightPixels;
+            if (height < screenHeight) {
+                deltaY = (screenHeight - height) / 2 - rect.top;
+            } else if (rect.top > 0) {
+                deltaY = -rect.top;
+            } else if (rect.bottom < screenHeight) {
+                deltaY = this.getHeight() - rect.bottom;
+            }
+        }
+
+        if (horizontal) {
+            int screenWidth = dm.widthPixels;
+            if (width < screenWidth) {
+                deltaX = (screenWidth - width) / 2 - rect.left;
+            } else if (rect.left > 0) {
+                deltaX = -rect.left;
+            } else if (rect.right < screenWidth) {
+                deltaX = screenWidth - rect.right;
+            }
+        }
+        matrix.postTranslate(deltaX, deltaY);
+    }
+
+
+    /**
+     * 限制最大最小缩放比例，自动居中
+     */
+    private void CheckView() {
+        float p[] = new float[9];
+        matrix.getValues(p);
+        if (mode == ZOOM) {
+            if (p[0] < minScaleR) {
+                //Log.d("", "当前缩放级别:"+p[0]+",最小缩放级别:"+minScaleR);
+                matrix.setScale(minScaleR, minScaleR);
+            }
+            if (p[0] > MAX_SCALE) {
+                //Log.d("", "当前缩放级别:"+p[0]+",最大缩放级别:"+MAX_SCALE);
+                matrix.set(savedMatrix);
+            }
+        }
+        center(true, true);
+    }
+
+
+    /**
+     * Distance of two point
+     */
+    private float spacing(MotionEvent event) {
+        float x = event.getX(0) - event.getX(1);
+        float y = event.getY(0) - event.getY(1);
+        return (float) Math.sqrt(x * x + y * y);
+    }
+
+    /**
+     * Midpoint of two point
+     */
+    private void midPoint(PointF point, MotionEvent event) {
+        float x = event.getX(0) + event.getX(1);
+        float y = event.getY(0) + event.getY(1);
+        point.set(x / 2, y / 2);
     }
 
     public void setOriginalInfo(int width, int height, int locationX, int locationY) {
@@ -139,7 +318,7 @@ public class SmoothImageView extends ImageView {
     }
 
     /**
-     * 初始化进入的变量信息
+     * Init params
      */
     private void initTransform() {
         if (getDrawable() == null) {
@@ -157,7 +336,6 @@ public class SmoothImageView extends ImageView {
         }
         mTransfrom = new Transfrom();
 
-        /** 下面为缩放的计算 */
         /* 计算初始的缩放值，初始值因为是CENTR_CROP效果，所以要保证图片的宽和高至少1个能匹配原始的宽和高，另1个大于 */
         float xSScale = mOriginalWidth / ((float) mBitmap.getWidth());
         float ySScale = mOriginalHeight / ((float) mBitmap.getHeight());
@@ -211,7 +389,6 @@ public class SmoothImageView extends ImageView {
 
     }
 
-    /* 下面实现了CENTER_CROP的功能 的Matrix，在优化的过程中，已经不用了 */
     private void getCenterCropMatrix() {
         if (getDrawable() == null) {
             return;
@@ -219,7 +396,7 @@ public class SmoothImageView extends ImageView {
         if (mBitmap == null || mBitmap.isRecycled()) {
             mBitmap = ((BitmapDrawable) getDrawable()).getBitmap();
         }
-        /* 下面实现了CENTER_CROP的功能 */
+        /* CENTER_CROP */
         float xScale = mOriginalWidth / ((float) mBitmap.getWidth());
         float yScale = mOriginalHeight / ((float) mBitmap.getHeight());
         float scale = xScale > yScale ? xScale : yScale;
@@ -238,7 +415,7 @@ public class SmoothImageView extends ImageView {
         if (mBitmap == null || mBitmap.isRecycled()) {
             mBitmap = ((BitmapDrawable) getDrawable()).getBitmap();
         }
-        /* 下面实现了CENTER_CROP的功能 */
+        /* CENTER_CROP */
         mSmoothMatrix.setScale(mTransfrom.scale, mTransfrom.scale);
         mSmoothMatrix.postTranslate(-(mTransfrom.scale * mBitmap.getWidth() / 2 - mTransfrom.rect.width / 2),
                 -(mTransfrom.scale * mBitmap.getHeight() / 2 - mTransfrom.rect.height / 2));

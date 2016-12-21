@@ -65,4 +65,14 @@
         <item name="android:padding">5dp</item>
     </style>
 
+    <style name="ToolbarText">
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">5dp</item>
+    </style>
+
+    <style name="ToolbarStyle" parent="Base.Widget.AppCompat.Toolbar">
+        <item name="android:textAppearance">@style/ToolbarText</item>
+        <item name="android:minHeight">@dimen/toolbar_minHeight</item>
+        <item name="titleMargin">0dp</item>
+    </style>
 </resources>

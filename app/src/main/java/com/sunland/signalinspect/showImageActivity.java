@@ -8,10 +8,13 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.sunland.utils.CustomUtils;
 import com.sunland.view.SmoothImageView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.sunland.signalinspect.ActionSearchActivity.THUMBNAIL_LABEL;
 
 public class showImageActivity extends Activity {
 
@@ -22,6 +25,7 @@ public class showImageActivity extends Activity {
     private int mWidth;
     private int mHeight;
     SmoothImageView imageView = null;
+    String rawPhoto = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +43,8 @@ public class showImageActivity extends Activity {
         imageView.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         setContentView(imageView);
-        imageView.setImageBitmap(BitmapFactory.decodeFile(mDatas.get(mPosition)));
-//        setContentView(R.layout.activity_show_image);
-//
-//        imgView = (ImageView) findViewById(R.id.img_show);
-//        Bitmap bitmap = BitmapFactory.decodeFile(ClipImageActivity.imgDir);
-//        if (bitmap != null)
-//        {
-//            imgView.setImageBitmap(bitmap);
-//        }
+        rawPhoto = CustomUtils.delStr(mDatas.get(mPosition), THUMBNAIL_LABEL);
+        imageView.setImageBitmap(BitmapFactory.decodeFile(rawPhoto));
+        imageView.setupView();
     }
 }

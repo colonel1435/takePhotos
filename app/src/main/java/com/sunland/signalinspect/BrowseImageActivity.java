@@ -1,29 +1,41 @@
 package com.sunland.signalinspect;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView.ScaleType;
+
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.sunland.utils.BitmapUtils;
 import com.sunland.view.SquareCenterImageView;
 
+import static com.sunland.signalinspect.ActionSearchActivity.THUMBNAIL_LABEL;
 import static com.sunland.signalinspect.DepotActivity.WORK_DIR;
 
 public class BrowseImageActivity extends AppCompatActivity {
-//	public static DisplayImageOptions mNormalImageOptions;
+	public static DisplayImageOptions mNormalImageOptions;
 	public static final String SDCARD_PATH = Environment.getExternalStorageDirectory().toString();
-	public static final String IMAGES_FOLDER = SDCARD_PATH + WORK_DIR;
+	public static final String IMAGES_FOLDER = SDCARD_PATH + WORK_DIR + THUMBNAIL_LABEL;
 	private GridView mGridView;
 
 	@Override
@@ -36,36 +48,25 @@ public class BrowseImageActivity extends AppCompatActivity {
 		BitmapUtils.getBmpUrl(datas, IMAGES_FOLDER);
 		mGridView.setAdapter(new ImagesInnerGridViewAdapter(datas));
 	}
-/*
+
 	private void initImageLoader(Context context) {
-		int memoryCacheSize = (int) (Runtime.getRuntime().maxMemory() / 5);
-		MemoryCacheAware<String, Bitmap> memoryCache;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-			memoryCache = new LruMemoryCache(memoryCacheSize);
-		} else {
-			memoryCache = new LRULimitedMemoryCache(memoryCacheSize);
-		}
-
-		mNormalImageOptions = new DisplayImageOptions.Builder().bitmapConfig(Config.RGB_565).cacheInMemory(true).cacheOnDisc(true)
-				.resetViewBeforeLoading(true).build();
-
-		// This
-		// This configuration tuning is custom. You can tune every option, you
-		// may tune some of them,
-		// or you can create default configuration by
-		// ImageLoaderConfiguration.createDefault(this);
-		// method.
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).defaultDisplayImageOptions(mNormalImageOptions)
-				.denyCacheImageMultipleSizesInMemory().discCache(new UnlimitedDiscCache(new File(IMAGES_FOLDER)))
-				// .discCacheFileNameGenerator(new Md5FileNameGenerator())
-				.memoryCache(memoryCache)
-				// .memoryCacheSize(memoryCacheSize)
-				.tasksProcessingOrder(QueueProcessingType.LIFO).threadPriority(Thread.NORM_PRIORITY - 2).threadPoolSize(3).build();
 
 		// Initialize ImageLoader with configuration.
-		ImageLoader.getInstance().init(config);
+		ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);
+		config.memoryCacheExtraOptions(1080,1920);//设置缓存每个图片的最大宽长
+		config.threadPoolSize(5);//设置缓存池的大小
+		config.threadPriority(Thread.NORM_PRIORITY - 2);//设置线程运行优先级为3 低于普通线程优先级
+		config.denyCacheImageMultipleSizesInMemory();
+		config.diskCacheFileNameGenerator(new Md5FileNameGenerator());//硬盘缓存文件名采用MD5加密策略 HashCodeFileNameGenerator()还可以用hashcode进行加密
+		config.diskCacheSize(50 * 1024 * 1024); // 默认设置50M硬盘缓存空间
+		config.memoryCacheSize(2*1024*1024);//设置内存缓存大小
+		config.diskCacheFileCount(50);//设置硬盘缓存文件数目
+		config.tasksProcessingOrder(QueueProcessingType.LIFO);
+		File cacheDir = new File(Environment.getExternalStorageDirectory()+"/SingnalInspect/cache");
+		config.diskCache(new UnlimitedDiskCache(cacheDir));//自定义缓存路径
+		ImageLoader.getInstance().init(config.build());
 	}
-*/
+
 	private class ImagesInnerGridViewAdapter extends BaseAdapter {
 
 		private List<String> datas;
@@ -94,7 +95,7 @@ public class BrowseImageActivity extends AppCompatActivity {
 			final SquareCenterImageView imageView = new SquareCenterImageView(BrowseImageActivity.this);
 			imageView.setScaleType(ScaleType.CENTER_CROP);
 			imageView.setImageBitmap(BitmapFactory.decodeFile(datas.get(position)));
-//			ImageLoader.getInstance().displayImage(datas.get(position), imageView);
+//			ImageLoader.getInstance().displayImage("file://" + datas.get(position), imageView);
 			imageView.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
