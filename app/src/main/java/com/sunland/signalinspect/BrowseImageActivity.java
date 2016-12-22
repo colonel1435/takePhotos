@@ -1,10 +1,12 @@
 package com.sunland.signalinspect;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.sunland.utils.BitmapUtils;
+import com.sunland.utils.CustomUtils;
 import com.sunland.utils.MyBrowseRecyclerAdapter;
 import com.sunland.utils.MyGridDividerItemDecoration;
 import com.sunland.utils.RecyclerItemClickListener;
@@ -78,16 +81,22 @@ public class BrowseImageActivity extends AppCompatActivity {
 
 	public void onImageClick(View view) {
 		int position = (int) view.getTag(R.id.ivBrowsePositionIndex);
-		Intent intent = new Intent(BrowseImageActivity.this, showImageActivity.class);
-		intent.putExtra("path", datas.get(position));
-		int[] location = new int[2];
-		view.getLocationOnScreen(location);
-		intent.putExtra("locationX", location[0]);
-		intent.putExtra("locationY", location[1]);
-
-		intent.putExtra("width", view.getWidth());
-		intent.putExtra("height", view.getHeight());
-		startActivity(intent);
-		overridePendingTransition(0, 0);
+		String path = datas.get(position);
+        Uri uri = Uri.fromFile(new File(path));
+        Intent intent = new Intent();
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+        intent.setDataAndType(uri, "image/*");
+        startActivity(intent);
+//		Intent intent = new Intent(BrowseImageActivity.this, showImageActivity.class);
+//		intent.putExtra("path", datas.get(position));
+//		int[] location = new int[2];
+//		view.getLocationOnScreen(location);
+//		intent.putExtra("locationX", location[0]);
+//		intent.putExtra("locationY", location[1]);
+//
+//		intent.putExtra("width", view.getWidth());
+//		intent.putExtra("height", view.getHeight());
+//		startActivity(intent);
+//		overridePendingTransition(0, 0);
 	}
 }

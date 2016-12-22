@@ -334,25 +334,23 @@ public class DepotActivity extends AppCompatActivity {
         }
 
         String file = CustomUtils.delStr2End(path, ActionSearchActivity.THUMBNAIL_LABEL, "/");
-        Uri uri = Uri.fromFile(new File(file));
-        Intent intent = new Intent();
-        intent.setAction(android.content.Intent.ACTION_VIEW);
-        intent.setDataAndType(uri, "image/*");
-        startActivity(intent);
-        /*
-        Intent intent = new Intent(DepotActivity.this, DispalyImageActivity.class);
+//        Uri uri = Uri.fromFile(new File(file));
+//        Intent intent = new Intent();
+//        intent.setAction(android.content.Intent.ACTION_VIEW);
+//        intent.setDataAndType(uri, "image/*");
+//        startActivity(intent);
+
+        Intent intent = new Intent(DepotActivity.this, showImageActivity.class);
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-
-        intent.putExtra("path", path);
+        intent.putExtra("path", file);
         intent.putExtra("locationX", location[0]);
         intent.putExtra("locationY", location[1]);
-
         intent.putExtra("width", view.getWidth());
         intent.putExtra("height", view.getHeight());
         startActivity(intent);
         overridePendingTransition(0, 0);
-        */
+
     }
 
     public void onBackThumbClick(View view) {
@@ -363,26 +361,23 @@ public class DepotActivity extends AppCompatActivity {
             return;
         }
         String file = CustomUtils.delStr2End(path, ActionSearchActivity.THUMBNAIL_LABEL, "/");
-        Uri uri = Uri.fromFile(new File(file));
-        Intent intent = new Intent();
-        intent.setAction(android.content.Intent.ACTION_VIEW);
-        intent.setDataAndType(uri, "image/*");
-        startActivity(intent);
+//        Uri uri = Uri.fromFile(new File(file));
+//        Intent intent = new Intent();
+//        intent.setAction(android.content.Intent.ACTION_VIEW);
+//        intent.setDataAndType(uri, "image/*");
+//        startActivity(intent);
 
-         /*
-        Intent intent = new Intent(DepotActivity.this, DispalyImageActivity.class);
+         Intent intent = new Intent(DepotActivity.this, showImageActivity.class);
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-
-        intent.putExtra("path", path);
+        intent.putExtra("path", file);
         intent.putExtra("locationX", location[0]);
         intent.putExtra("locationY", location[1]);
-
         intent.putExtra("width", view.getWidth());
         intent.putExtra("height", view.getHeight());
         startActivity(intent);
         overridePendingTransition(0, 0);
-        */
+
     }
 
     private void showFileBrowser() {

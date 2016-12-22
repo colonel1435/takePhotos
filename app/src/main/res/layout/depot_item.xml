@@ -15,8 +15,10 @@
 
         <ImageView
             android:id="@+id/iv_depot"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/depot_item_height"
             android:layout_height="@dimen/depot_item_height"
+            android:layout_marginLeft="@dimen/button_left_margin"
+            android:layout_marginRight="@dimen/button_right_margin"
             android:layout_centerVertical="true"
             android:src="@drawable/depot_icon"/>
 

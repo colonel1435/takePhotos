@@ -26,7 +26,7 @@
     <dimen name="button_top_margin">10dp</dimen>
     <dimen name="button_bottom_margin">10dp</dimen>
     <dimen name="list_item_height">48dp</dimen>
-    <dimen name="thumb_width">64dp</dimen>
-    <dimen name="thumb_height">64dp</dimen>
+    <dimen name="thumb_width">48dp</dimen>
+    <dimen name="thumb_height">48dp</dimen>
     <dimen name="card_radius">5dp</dimen>
 </resources>

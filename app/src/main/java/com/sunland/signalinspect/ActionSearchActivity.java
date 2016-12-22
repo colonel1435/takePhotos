@@ -46,8 +46,8 @@ public class ActionSearchActivity extends AppCompatActivity {
 
     public static final String WORK_DIR_KEY = "WORK_DIR";
     public static final String HISTORY_LIST = "search_history";
-    public static final int THUMBNAIL_WIDTH = 64;
-    public static final int THUMBNAIL_HEIGHT = 64;
+    public static final int THUMBNAIL_WIDTH = 48;
+    public static final int THUMBNAIL_HEIGHT = 48;
 
     private static final String TAG = "wumin";
     private Toolbar toolbar;
