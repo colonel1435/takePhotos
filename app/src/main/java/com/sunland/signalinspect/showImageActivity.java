@@ -19,20 +19,18 @@ import static com.sunland.signalinspect.ActionSearchActivity.THUMBNAIL_LABEL;
 
 public class showImageActivity extends Activity {
 
-    private List<String> mDatas;
     private int mPosition;
     private int mLocationX;
     private int mLocationY;
     private int mWidth;
     private int mHeight;
+    private String rawPhoto = "";
     SmoothImageView imageView = null;
-    String rawPhoto = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDatas = (ArrayList<String>) getIntent().getSerializableExtra("images");
-        mPosition = getIntent().getIntExtra("position", 0);
+        rawPhoto = getIntent().getStringExtra("path");
         mLocationX = getIntent().getIntExtra("locationX", 0);
         mLocationY = getIntent().getIntExtra("locationY", 0);
         mWidth = getIntent().getIntExtra("width", 0);
@@ -44,8 +42,31 @@ public class showImageActivity extends Activity {
         imageView.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         setContentView(imageView);
-        rawPhoto = mDatas.get(mPosition);
-        imageView.setImageBitmap(BitmapFactory.decodeFile(rawPhoto));
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize=2; //图片高宽度都为原来的二分之一，即图片大小为原来的大小的四分之一
+        options.inTempStorage = new byte[5*1024];
+        imageView.setImageBitmap(BitmapFactory.decodeFile(rawPhoto, options));
         imageView.setupView();
+    }
+	
+	 @Override
+    public void onBackPressed() {
+        imageView.setOnTransformListener(new SmoothImageView.TransformListener() {
+            @Override
+            public void onTransformComplete(int mode) {
+                if (mode == 2) {
+                    finish();
+                }
+            }
+        });
+        imageView.transformOut();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isFinishing()) {
+            overridePendingTransition(0, 0);
+        }
     }
 }

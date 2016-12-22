@@ -279,6 +279,11 @@ public class ActionSearchActivity extends AppCompatActivity {
                 if (img.exists()) {
                     img.delete();
                 }
+                String thumb = workDir + THUMBNAIL_LABEL + mItems.get(i).getTitle();
+                File thumbFile = new File(thumb);
+                if (thumbFile.exists()) {
+                    thumbFile.delete();
+                }
                 tmp.remove(i-del);
                 del ++;
             }

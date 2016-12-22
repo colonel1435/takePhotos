@@ -1,44 +1,24 @@
 package com.sunland.signalinspect;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.GridView;
-import android.widget.ImageView.ScaleType;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache;
-import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.sunland.utils.BitmapUtils;
 import com.sunland.utils.MyBrowseRecyclerAdapter;
+import com.sunland.utils.MyGridDividerItemDecoration;
 import com.sunland.utils.RecyclerItemClickListener;
-import com.sunland.view.MyGridLayoutManager;
-import com.sunland.view.SquareCenterImageView;
 
-import static com.sunland.signalinspect.ActionSearchActivity.THUMBNAIL_LABEL;
 import static com.sunland.signalinspect.DepotActivity.WORK_DIR;
 
 public class BrowseImageActivity extends AppCompatActivity {
@@ -68,13 +48,13 @@ public class BrowseImageActivity extends AppCompatActivity {
 		mBrowseRecyclerAdapter = new MyBrowseRecyclerAdapter(mLists, this);
 		mRecyclerView = (RecyclerView) findViewById(R.id.action_browse_recyclerview);
 		mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-		mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+		mRecyclerView.addItemDecoration(new MyGridDividerItemDecoration(mContext, R.drawable.recyclerview_divider));
 		mRecyclerView.setHasFixedSize(true);
 		mRecyclerView.setAdapter(mBrowseRecyclerAdapter);
 		mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, mRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
 			@Override
 			public void onItemClick(View view, int position) {
-				Toast.makeText(mContext, "onItemClick", Toast.LENGTH_LONG).show();
+//				Toast.makeText(mContext, "onItemClick", Toast.LENGTH_LONG).show();
 			}
 
 			@Override
@@ -82,7 +62,7 @@ public class BrowseImageActivity extends AppCompatActivity {
 				mode = MULTIPLE_CHOICE;
 				mLists.get(position).setChecked(true);
 				mBrowseRecyclerAdapter.notifyDataSetChanged();
-				Toast.makeText(mContext, "onItemLongClick", Toast.LENGTH_LONG).show();
+//				Toast.makeText(mContext, "onItemLongClick", Toast.LENGTH_LONG).show();
 			}
 		}));
 	}
@@ -99,8 +79,7 @@ public class BrowseImageActivity extends AppCompatActivity {
 	public void onImageClick(View view) {
 		int position = (int) view.getTag(R.id.ivBrowsePositionIndex);
 		Intent intent = new Intent(BrowseImageActivity.this, showImageActivity.class);
-		intent.putExtra("images", (ArrayList<String>) datas);
-		intent.putExtra("position", position);
+		intent.putExtra("path", datas.get(position));
 		int[] location = new int[2];
 		view.getLocationOnScreen(location);
 		intent.putExtra("locationX", location[0]);
