@@ -195,20 +195,33 @@ public class ActionSearchActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             CustomUtils.hideKeyboard(view);
             if (!usrInput.isEmpty()) {
-                SharedPreferences sp = getSharedPreferences(HISTORY_LIST, MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString(usrInput, usrInput).commit();
-                mHistoryItems.add(usrInput);
-                mHistoryAdapter.notifyDataSetChanged();
+                if (!mHistoryItems.contains(usrInput)) {
+                    SharedPreferences sp = getSharedPreferences(HISTORY_LIST, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString(usrInput, usrInput).commit();
+
+                    mHistoryItems.add(usrInput);
+                    mHistoryAdapter.notifyDataSetChanged();
+                }
             }
-//            Toast.makeText(mContext, "ITEM -> " + mItems[position], Toast.LENGTH_LONG).show();
-            Uri uri = Uri.fromFile(new File(workDir + mItemsBak.get(position)));
-            Intent intent = new Intent();
-//            intent.setAction(android.content.Intent.ACTION_GET_CONTENT);
-//        intent.setAction(Intent.ACTION_PICK);
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.setDataAndType(uri, "image/*");
+            String path = workDir + mItemsBak.get(position).getTitle();
+            Log.i(TAG, "path -> " + path);
+//            String file = CustomUtils.delStr2End(path, ActionSearchActivity.THUMBNAIL_LABEL, "/");
+            Intent intent = new Intent(ActionSearchActivity.this, showImageActivity.class);
+            int[] location = new int[2];
+            view.getLocationOnScreen(location);
+            intent.putExtra("path", path);
+            intent.putExtra("locationX", location[0]);
+            intent.putExtra("locationY", location[1]);
+            intent.putExtra("width", view.getWidth());
+            intent.putExtra("height", view.getHeight());
             startActivity(intent);
+            overridePendingTransition(0, 0);
+//            Uri uri = Uri.fromFile(new File(workDir + mItemsBak.get(position)));
+//            Intent intent = new Intent();
+//            intent.setAction(Intent.ACTION_VIEW);
+//            intent.setDataAndType(uri, "image/*");
+//            startActivity(intent);
         }
     };
 
@@ -220,11 +233,13 @@ public class ActionSearchActivity extends AppCompatActivity {
                 Toast.makeText(mContext, getString(R.string.search_null), Toast.LENGTH_LONG).show();
                 return false;
             }
-            SharedPreferences sp = getSharedPreferences(HISTORY_LIST, MODE_PRIVATE);
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putString(query, query).commit();
-            mHistoryItems.add(query);
-            mHistoryAdapter.notifyDataSetChanged();
+            if (!mHistoryItems.contains(usrInput)) {
+                SharedPreferences sp = getSharedPreferences(HISTORY_LIST, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString(query, query).commit();
+                mHistoryItems.add(query);
+                mHistoryAdapter.notifyDataSetChanged();
+            }
             return false;
         }
 
