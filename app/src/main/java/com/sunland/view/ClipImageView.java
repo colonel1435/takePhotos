@@ -384,8 +384,7 @@ public class ClipImageView extends ImageView implements
 			SCALE_MID = initScale * 2;
 			SCALE_MAX = initScale * 4;
 			mScaleMatrix.postTranslate((width - dw) / 2, (height - dh) / 2);
-			mScaleMatrix.postScale(scale, scale, getWidth() / 2,
-					getHeight() / 2);
+			mScaleMatrix.postScale(scale, scale, getWidth() / 2,getHeight() / 2);
 			// 图片移动至屏幕中心
 			setImageMatrix(mScaleMatrix);
 			once = false;

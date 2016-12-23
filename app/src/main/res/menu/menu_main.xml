@@ -15,5 +15,15 @@
         android:title="@string/menu_browse"
         android:icon="@drawable/ic_action_browse"
         android:orderInCategory="300"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
+    <item android:id="@+id/action_import"
+        android:title="@string/menu_import"
+        android:icon="@drawable/ic_action_browse"
+        android:orderInCategory="300"
+        app:showAsAction="never" />
+    <item android:id="@+id/action_export"
+        android:title="@string/menu_export"
+        android:icon="@drawable/ic_action_browse"
+        android:orderInCategory="300"
+        app:showAsAction="never" />
 </menu>

@@ -5,8 +5,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +27,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.sunland.utils.CustomUtils;
 import com.sunland.utils.MyDepotRecyclerAdapter;
 
@@ -53,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
 //        setSupportActionBar(toolbar);
@@ -68,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         mData = getData();
         myRecyclerAdapter.notifyDataSetChanged();
     }
+
 
     void initView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_depot) ;
@@ -104,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
                 swipeFlags = 0;
-//                swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+                swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
             }
             return makeMovementFlags(dragFlags, swipeFlags);
         }
@@ -119,21 +125,41 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            int position = viewHolder.getAdapterPosition();
-            myRecyclerAdapter.notifyItemRemoved(position);
-            DepotInfo item = mData.get(position);
-            mData.remove(position);
+            final RecyclerView.ViewHolder vHolder = viewHolder;
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle(R.string.notification_msg_title)
+                    .setMessage(getString(R.string.del_depot_msg))
+                    .setNegativeButton(getString(R.string.depot_cancle), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            myRecyclerAdapter.notifyDataSetChanged();
+                        }
+                    })
+                    .setPositiveButton(getString(R.string.msg_ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            int position = vHolder.getAdapterPosition();
+                            myRecyclerAdapter.notifyItemRemoved(position);
+                            DepotInfo item = mData.get(position);
+                            mData.remove(position);
 
-            String depot = item.getDepot();
-            SharedPreferences sp = getSharedPreferences(DEPOT_LIST, MODE_PRIVATE);
-            SharedPreferences.Editor editor =sp.edit();
-            editor.remove(depot).commit();
+                            String depot = item.getDepot();
+                            SharedPreferences sp = getSharedPreferences(DEPOT_LIST, MODE_PRIVATE);
+                            SharedPreferences.Editor editor =sp.edit();
+                            editor.remove(depot).commit();
 
-            File file = new File(Environment.getDataDirectory() + getPackageName().toString()
-                    + "/shared_prefs", depot + ".xml");
-            if (file.exists()) {
-                file.delete();
-            }
+                            SharedPreferences spItem = getSharedPreferences(depot, MODE_PRIVATE);
+                            SharedPreferences.Editor editorItem = spItem.edit();
+                            editorItem.clear().commit();
+                        }
+                    })
+                    .create().show();
+
+//            File file = new File(Environment.getDataDirectory() + File.separator + getPackageName().toString()
+//                    + "/shared_prefs", depot + ".xml");
+//            if (file.exists()) {
+//                file.delete();
+//            }
 
 //            File depotFile = new File(Environment.getDataDirectory() + getPackageName().toString()
 //                    + "/shared_prefs", DepotActivity.DC_LIST + ".xml");

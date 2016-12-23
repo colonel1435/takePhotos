@@ -36,14 +36,20 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.sunland.utils.BitmapUtils;
 import com.sunland.utils.CustomUtils;
 import com.sunland.utils.MyDCRecyclerAdapter;
 import com.sunland.utils.MyDCTurnoutRecyclerAdapter;
 
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.sunland.signalinspect.MainActivity.DC_NUM;
 
 
 public class DepotActivity extends AppCompatActivity {
@@ -59,9 +65,12 @@ public class DepotActivity extends AppCompatActivity {
     public static final String DC_THUMB_SEP  = "-";
     public static final String DC_STATUS_SEP  = "|";
     public static final String FILE_NAME_SEP = "_";
+    public static final String CFG_FILE_POSTFIX = ".xml";
     public static final String DC_ITEM_MAX_KEY = "max";
-    private static final int TAKE_PHOTOS = 0;
-    private static final int SAVE_PHOTOS = 1;
+    public static final int TAKE_PHOTOS = 0;
+    public static final int SAVE_PHOTOS = 1;
+    public static final int FILE_SELECT_CODE = 2;
+    public static final int SEARCH_PHOTOS = 3;
     private static final String TAG = "wumin";
     public static final String ZOOM_PHOTO_KEY = "ZOOM";
     public static final String DC_LIST = "dc_item";
@@ -71,6 +80,7 @@ public class DepotActivity extends AppCompatActivity {
     private static String SCAN_PATH = "";
     public static final int SHOW_THUMB = 1;
 
+    public static String EXPORT_DIR = "";
     public static int currentButtonPosition = -1;
     public static TextView currentView = null;
     public static String imgName = "";
@@ -113,6 +123,11 @@ public class DepotActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        SystemBarTintManager tintManager=new SystemBarTintManager(this);
+        tintManager.setStatusBarTintResource(R.color.colorPrimaryDark);
+        tintManager.setStatusBarTintEnabled(true);
+
+        EXPORT_DIR = Environment.getExternalStorageDirectory().toString();
         imgDir = Environment.getExternalStorageDirectory().toString() + WORK_DIR;
         File dir = new File(imgDir);
         if (!dir.exists()) {
@@ -190,10 +205,10 @@ public class DepotActivity extends AppCompatActivity {
             String item_name = sp.getString(DC_KEY, "");
             item_name = CustomUtils.delStr2End(item_name, dc, DC_ITEM_SEP);
             editor.putString(DC_KEY, item_name).commit();
-            int itemNum  = sp.getInt(MainActivity.DC_NUM, -1);
+            int itemNum  = sp.getInt(DC_NUM, -1);
             if (itemNum != -1) {
                 itemNum -= 1;
-                editor.putInt(MainActivity.DC_NUM, itemNum).commit();
+                editor.putInt(DC_NUM, itemNum).commit();
                 SharedPreferences spMain = getSharedPreferences(MainActivity.DEPOT_LIST, MODE_PRIVATE);
                 SharedPreferences.Editor mainEditor = spMain.edit();
                 mainEditor.putInt(depot, itemNum).commit();
@@ -248,7 +263,7 @@ public class DepotActivity extends AppCompatActivity {
                     DCInfo dcInfo = new DCInfo(tmp, dcItem, "", "");
                     Log.i(TAG, "Add DC ITEM -> " + dcItem);
                     dcList.add(dcInfo);
-                    editor.putInt(dcItem, 1);
+                    editor.putInt(tmp+dcItem, 1);
 
                 }
                 dc_name += DC_ITEM_SEP;
@@ -332,7 +347,10 @@ public class DepotActivity extends AppCompatActivity {
             Toast.makeText(mContext, getString(R.string.show_thumb_null), Toast.LENGTH_LONG).show();
             return;
         }
-
+        if (!new File(path).exists()) {
+            Toast.makeText(mContext, "文件不存在，请重新拍照！", Toast.LENGTH_LONG).show();
+            return;
+        }
         String file = CustomUtils.delStr2End(path, ActionSearchActivity.THUMBNAIL_LABEL, "/");
 //        Uri uri = Uri.fromFile(new File(file));
 //        Intent intent = new Intent();
@@ -358,6 +376,10 @@ public class DepotActivity extends AppCompatActivity {
         String path = (String)view.getTag(R.id.ivBackPositionContent);
         if (path.equals("")) {
             Toast.makeText(mContext, getString(R.string.show_thumb_null), Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!new File(path).exists()) {
+            Toast.makeText(mContext, "文件不存在，请重新拍照！", Toast.LENGTH_LONG).show();
             return;
         }
         String file = CustomUtils.delStr2End(path, ActionSearchActivity.THUMBNAIL_LABEL, "/");
@@ -434,10 +456,10 @@ public class DepotActivity extends AppCompatActivity {
         String item_name = sp.getString(DC_KEY, "");
         item_name = CustomUtils.delStr2End(item_name, dc, DC_ITEM_SEP);
         editor.putString(DC_KEY, item_name).commit();
-        int itemNum  = sp.getInt(MainActivity.DC_NUM, -1);
+        int itemNum  = sp.getInt(DC_NUM, -1);
         if (itemNum != -1) {
             itemNum -= 1;
-            editor.putInt(MainActivity.DC_NUM, itemNum).commit();
+            editor.putInt(DC_NUM, itemNum).commit();
             SharedPreferences spMain = getSharedPreferences(MainActivity.DEPOT_LIST, MODE_PRIVATE);
             SharedPreferences.Editor mainEditor = spMain.edit();
             mainEditor.putInt(depot, itemNum).commit();
@@ -497,10 +519,10 @@ public class DepotActivity extends AppCompatActivity {
                         item_name += DC_ITEM_SEP;
                         editor.putString(DC_KEY, item_name).commit();
 
-                        int itemNum = sp.getInt(MainActivity.DC_NUM, -1);
+                        int itemNum = sp.getInt(DC_NUM, -1);
                         if (itemNum != -1) {
                             itemNum ++;
-                            editor.putInt(MainActivity.DC_NUM, itemNum).commit();
+                            editor.putInt(DC_NUM, itemNum).commit();
                             SharedPreferences spMain = getSharedPreferences(MainActivity.DEPOT_LIST, MODE_PRIVATE);
                             SharedPreferences.Editor mainEditor = spMain.edit();
                             mainEditor.putInt(depot, itemNum).commit();
@@ -515,6 +537,7 @@ public class DepotActivity extends AppCompatActivity {
     }
 
     public void onRefreshThumb(String path) {
+        File file = new File(path);
         List<String> strItems = CustomUtils.splitString(path, FILE_NAME_SEP);
         String strItem = strItems.get(2);
         String strStatus = strItems.get(3);
@@ -539,6 +562,13 @@ public class DepotActivity extends AppCompatActivity {
         myDCRecyclerAdapter.refreshChildView();
     }
 
+    public void refreshThumb() {
+        List<String> list = new ArrayList<>();
+        CustomUtils.getThumbList(list, imgDir + ActionSearchActivity.THUMBNAIL_LABEL);
+        for (String item : list) {
+            onRefreshThumb(item);
+        }
+    }
     public void onTurnoutClick(View view) {
         currentView = (TextView) view;
         View popupView = LayoutInflater.from(mContext).inflate(R.layout.dialog_dc_turnout, null);
@@ -566,6 +596,8 @@ public class DepotActivity extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.depot_new), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        int position = (int)currentView.getTag(R.id.tvTurnoutPositionIndex);
+                        String parent = currentView.getTag(R.id.tvTurnoutParentContent).toString();
                         CustomUtils.hideKeyboard(popupView);
                         String val = etItem.getText().toString();
                         if (val.length() == 0) {
@@ -573,15 +605,14 @@ public class DepotActivity extends AppCompatActivity {
                             return;
                         }
                         SharedPreferences sp = getSharedPreferences(depot, MODE_PRIVATE);
-                        int ret = sp.getInt(val, 0);
+                        int ret = sp.getInt(parent+val, 0);
                         if (ret != 0) {
                             Toast.makeText(mContext, getString(R.string.msg_dc_item), Toast.LENGTH_LONG).show();
                             return;
                         }
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putInt(val, 1);
-                        int position = (int)currentView.getTag(R.id.tvTurnoutPositionIndex);
-                        String parent = currentView.getTag(R.id.tvTurnoutParentContent).toString();
+
                         myDCRecyclerAdapter.addChildView(position, parent, val);
                         getData(mData);
                         myDCRecyclerAdapter.notifyDataSetChanged();
@@ -651,11 +682,47 @@ public class DepotActivity extends AppCompatActivity {
                 .create().show();
     }
 
+    public void importDC() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            startActivityForResult(Intent.createChooser(intent, "请选择一个需要导入的文件"),
+                    FILE_SELECT_CODE);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a Dialog
+            Toast.makeText(mContext, getString(R.string.install_file_browser), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void exportDC() {
+        SharedPreferences sp = getSharedPreferences(depot, MODE_PRIVATE);
+        List<DcItemInfo> items = new ArrayList<>();
+        String dcItem = sp.getString(DC_KEY, "");
+        int dcNum = sp.getInt(DC_NUM, 0);
+        DcItemInfo info = new DcItemInfo(dcItem,dcNum);
+        items.add(info);
+        String desDir = EXPORT_DIR + File.separator + depot + CFG_FILE_POSTFIX;
+        try {
+            CustomUtils.write2XML(desDir, items);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i(TAG, "EXPORT DES -> " + desDir);
+        Toast.makeText(mContext, getString(R.string.export_cfg_success) + "文件路径: " + desDir, Toast.LENGTH_LONG).show();
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+//        refreshThumb();
+        super.onStop();
     }
 
     @Override
@@ -674,6 +741,12 @@ public class DepotActivity extends AppCompatActivity {
             case R.id.action_add:
                 addDC();
                 return true;
+            case R.id.action_import:
+                importDC();
+                return true;
+            case R.id.action_export:
+                exportDC();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -681,19 +754,65 @@ public class DepotActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (requestCode == TAKE_PHOTOS) {
-                Log.i(TAG, "Take photo finished...");
-                Intent intent = new Intent(DepotActivity.this, ClipImageActivity.class);
-                intent.putExtra(ClipImageActivity.PHOTONAME_KEY, fileName);
-                intent.putExtra(ClipImageActivity.PHOTOFILE_KEY, imgName);
-                intent.putExtra(ClipImageActivity.DEPOT_KEY, depot);
-                startActivityForResult(intent, SAVE_PHOTOS);
+            switch (requestCode) {
+                case TAKE_PHOTOS:
+                    Log.i(TAG, "Take photo finished...");
+                    Intent intent = new Intent(DepotActivity.this, ClipImageActivity.class);
+                    intent.putExtra(ClipImageActivity.PHOTONAME_KEY, fileName);
+                    intent.putExtra(ClipImageActivity.PHOTOFILE_KEY, imgName);
+                    intent.putExtra(ClipImageActivity.DEPOT_KEY, depot);
+                    startActivityForResult(intent, SAVE_PHOTOS);
+                    break;
+                case SAVE_PHOTOS:
+                    Log.i(TAG, "Save photo finished...");
+                    String thumb = data.getStringExtra(ZOOM_PHOTO_KEY);
+                    onRefreshThumb(thumb);
+                    break;
+                case FILE_SELECT_CODE:
+                    Uri uri = data.getData();
+                    String url = CustomUtils.getRealFilePath(mContext, uri);
+                    String fileName = url.substring(url.indexOf(File.separator), url.length());
+                    Log.i(TAG, "SRC -> " + url + " File -> " + fileName);
+                    if (!fileName.endsWith(CFG_FILE_POSTFIX)) {
+                        Toast.makeText(mContext, getString(R.string.select_file_fotmat_err), Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    if (fileName.indexOf(depot) == -1) {
+                        Toast.makeText(mContext, getString(R.string.select_file_depot_err), Toast.LENGTH_LONG).show();
+                        break;
+                    }
+
+                    SharedPreferences sp = getSharedPreferences(depot, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.clear().commit();
+                    List<DcItemInfo> itemInfos = new ArrayList<>();
+                    try {
+                        itemInfos = CustomUtils.read4XML(url);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (XmlPullParserException e) {
+                        e.printStackTrace();
+                    }
+
+                    String itemStr;
+                    int num;
+                    for (DcItemInfo item : itemInfos) {
+                        itemStr = item.getItem();
+                        num = item.getNum();
+                        SharedPreferences spMain = getSharedPreferences(MainActivity.DEPOT_LIST, MODE_PRIVATE);
+                        SharedPreferences.Editor mainEditor = spMain.edit();
+                        mainEditor.putInt(depot, num).commit();
+                        Log.i(TAG, "STR -> " + itemStr + " NUM " + num);
+                        editor.putInt(DC_NUM, num).commit();
+                        editor.putString(DC_KEY, itemStr).commit();
+                    }
+                    getData(mData);
+                    myDCRecyclerAdapter.notifyDataSetChanged();
+                    Log.i(TAG, "DES -> " + url);
+                    Toast.makeText(mContext, getString(R.string.import_cfg_success), Toast.LENGTH_LONG).show();
+                    break;
             }
-            if (requestCode == SAVE_PHOTOS) {
-                Log.i(TAG, "Save photo finished...");
-                String thumb = data.getStringExtra(ZOOM_PHOTO_KEY);
-                onRefreshThumb(thumb);
-            }
+
         }
         imgName = "";
         super.onActivityResult(requestCode, resultCode, data);

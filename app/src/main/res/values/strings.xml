@@ -32,7 +32,7 @@
     <string name="dc_item_turnout_name">转折机数</string>
     <string name="dc_item_turnout_name_msg">请输入转折机数量</string>
     <string name="dc_item_turnout_add_item">转折机号</string>
-    <string name="dc_item_turnout_add_item_msg">请输入转折机号(如：尖1， 星1)</string>
+    <string name="dc_item_turnout_add_item_msg">请输入转折机号(如：尖1， 心1)</string>
     <string name="dc_item_turnout_modify_item_old">旧转折机号</string>
     <string name="dc_item_turnout_modify_item_new">新转折机号</string>
     <string name="dc_item_turnout_modify_item_msg">请输入新的转折机号</string>
@@ -51,8 +51,11 @@
     <string name="menu_browse">浏览</string>
     <string name="menu_search">查找</string>
     <string name="menu_add">添加</string>
+    <string name="menu_import">导入配置</string>
+    <string name="menu_export">导出配置</string>
     <string name="save_finished">数据采集已完成</string>
     <string name="show_thumb_null">该设备暂时未拍照，无预览图</string>
+    <string name="del_depot_msg">您确认删除该站数据吗吗？</string>
 
     <string name="title_activity_splash">SplashActivity</string>
 
@@ -80,4 +83,12 @@
 
     <string name="browse_photo_title">照片浏览</string>
     <string name="photo_null">您还未拍照，无法进行照片浏览</string>
+    <string name="select_file_fotmat_err">文件格式不正确，请重试！</string>
+    <string name="select_file_depot_err">选择站点错误，请重试！</string>
+    <string name="export_cfg_success">配置文件导出成功</string>
+    <string name="import_cfg_success">配置文件导入成功</string>
+    <string name="install_file_browser">请安装文件管理器</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
