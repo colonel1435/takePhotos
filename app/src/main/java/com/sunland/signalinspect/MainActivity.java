@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String DEPOT_TIME_KEY = "time";
     public static final String DC_NUM = "dc_num";
     public static final String DC_ITEM_MAX = "dc_item_max";
-    private static final String formatter = "yyyy-MM-dd HH:mm";
+    public static final String formatter = "yyyy-MM-dd HH:mm";
 
 
     private RecyclerView mRecyclerView;
@@ -190,18 +190,19 @@ public class MainActivity extends AppCompatActivity {
             mData = new ArrayList<>();
         }
         mData.clear();
+        String time;
         SharedPreferences sp = getSharedPreferences(DEPOT_LIST, MODE_PRIVATE);
         Map<String, ?> cfgMap = sp.getAll();
         for (String key : cfgMap.keySet()) {
             SharedPreferences spDepot = getSharedPreferences(key, MODE_PRIVATE);
-            String time = spDepot.getString(DEPOT_TIME_KEY, "");
+            time = spDepot.getString(DEPOT_TIME_KEY, "");
             DepotInfo depot = new DepotInfo();
             depot.setImg(R.drawable.depot_icon);
             depot.setDepot(key);
             depot.setDcNum(getString(R.string.dc_num_title) + cfgMap.get(key).toString());
             depot.setDate(time);
 
-            Log.i(TAG, "Depot -> " + key + " Num -> " + cfgMap.get(key));
+            Log.i(TAG, "Depot -> " + key + " Num -> " + cfgMap.get(key) + " Time -> " + time);
             mData.add(depot);
         }
         return mData;

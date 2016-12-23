@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.sunland.signalinspect.MainActivity.DC_NUM;
+import static com.sunland.signalinspect.MainActivity.DEPOT_TIME_KEY;
 
 
 public class DepotActivity extends AppCompatActivity {
@@ -720,9 +721,9 @@ public class DepotActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-//        refreshThumb();
-        super.onStop();
+    protected void onRestart() {
+        super.onRestart();
+        myDCRecyclerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -796,13 +797,15 @@ public class DepotActivity extends AppCompatActivity {
 
                     String itemStr;
                     int num;
+                    String now = CustomUtils.getCurTime(MainActivity.formatter);
                     for (DcItemInfo item : itemInfos) {
                         itemStr = item.getItem();
                         num = item.getNum();
                         SharedPreferences spMain = getSharedPreferences(MainActivity.DEPOT_LIST, MODE_PRIVATE);
                         SharedPreferences.Editor mainEditor = spMain.edit();
                         mainEditor.putInt(depot, num).commit();
-                        Log.i(TAG, "STR -> " + itemStr + " NUM " + num);
+                        Log.i(TAG, "STR -> " + itemStr + " NUM -> " + num + " Time -> " + now);
+                        editor.putString(DEPOT_TIME_KEY, now);
                         editor.putInt(DC_NUM, num).commit();
                         editor.putString(DC_KEY, itemStr).commit();
                     }

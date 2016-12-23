@@ -27,7 +27,7 @@
             android:layout_marginTop="@dimen/dialog_depot_top_margin"
             android:layout_marginBottom="@dimen/dialog_depot_bottom_margin"
             android:layout_marginRight="@dimen/dialog_depot_right_margin"
-            android:inputType="number"
+            android:inputType="text"
             android:maxLines="1"
             android:maxLength="16"
             android:hint="@string/dc_item_name_msg"/>
