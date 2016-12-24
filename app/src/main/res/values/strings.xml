@@ -89,6 +89,8 @@
     <string name="import_cfg_success">配置文件导入成功</string>
     <string name="install_file_browser">请安装文件管理器</string>
 
+    <string name="save_photo">保存</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

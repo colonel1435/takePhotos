@@ -17,6 +17,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:layout_marginBottom="20dp"
-        android:text="Save"/>
+        android:background="@drawable/selector_blue_round_button"
+        android:text="@string/save_photo"/>
 
 </RelativeLayout>
