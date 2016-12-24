@@ -39,7 +39,7 @@
                     android:layout_marginLeft="@dimen/button_left_margin"
                     android:layout_marginRight="@dimen/button_right_margin"
                     android:text="@string/select_all"
-                    android:background="@drawable/round_button_shape"
+                    style="@style/round_button_style"
                     android:onClick="onSelectAll"/>
                 <Button
                     android:layout_width="0dp"
@@ -48,7 +48,7 @@
                     android:layout_marginLeft="@dimen/button_left_margin"
                     android:layout_marginRight="@dimen/button_right_margin"
                     android:text="@string/select_reverse"
-                    android:background="@drawable/round_button_shape"
+                    style="@style/round_button_style"
                     android:onClick="onSelectOpposite"/>
                 <Button
                     android:layout_width="0dp"
@@ -57,7 +57,7 @@
                     android:layout_marginLeft="@dimen/button_left_margin"
                     android:layout_marginRight="@dimen/button_right_margin"
                     android:text="@string/select_del"
-                    android:background="@drawable/round_button_shape"
+                    style="@style/round_button_style"
                     android:onClick="onSelectDelete"/>
                 <Button
                     android:layout_width="0dp"
@@ -65,7 +65,7 @@
                     android:layout_weight="1"
                     android:layout_marginLeft="@dimen/button_left_margin"
                     android:layout_marginRight="@dimen/button_right_margin"
-                    android:text="@string/cancal_select"
+                    style="@style/round_button_style"
                     android:background="@drawable/round_button_shape"
                     android:onClick="onSelectCancle"/>
             </LinearLayout>
@@ -99,7 +99,7 @@
                     android:gravity="center"
                     android:layout_marginLeft="@dimen/dialog_depot_left_margin"
                     android:text="@string/history_button"
-                    android:background="@drawable/round_button_shape"
+                    style="@style/round_button_style"
                     android:onClick="clearHistory"/>
             </LinearLayout>
             <TextView

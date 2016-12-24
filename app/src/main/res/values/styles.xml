@@ -89,4 +89,11 @@
         <item name="android:minHeight">@dimen/toolbar_minHeight</item>
         <item name="titleMargin">0dp</item>
     </style>
+
+    <style name="round_button_style">
+        <item name="android:background">@drawable/selector_blue_round_button</item>
+        <item name="android:padding">10dip</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+
+    </style>
 </resources>

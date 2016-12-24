@@ -30,8 +30,10 @@
             android:textColor="@color/colorLightRed"/>
 
         <View
-            android:layout_width="2dp"
+            android:layout_width="1dp"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/button_top_margin"
+            android:layout_marginBottom="@dimen/button_bottom_margin"
             android:background="@color/colorLightGrey"/>
 
 
@@ -60,8 +62,10 @@
                android:onClick="onSetThumbClick"/>
        </LinearLayout>
        <View
-           android:layout_width="2dp"
+           android:layout_width="1dp"
            android:layout_height="match_parent"
+           android:layout_marginTop="@dimen/button_top_margin"
+           android:layout_marginBottom="@dimen/button_bottom_margin"
            android:background="@color/colorLightGrey"/>
        <LinearLayout
            android:layout_width="0dp"
