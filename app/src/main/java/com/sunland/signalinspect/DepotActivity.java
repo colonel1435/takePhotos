@@ -41,6 +41,7 @@ import com.sunland.utils.BitmapUtils;
 import com.sunland.utils.CustomUtils;
 import com.sunland.utils.MyDCRecyclerAdapter;
 import com.sunland.utils.MyDCTurnoutRecyclerAdapter;
+import com.sunland.utils.ScreenUtils;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -437,12 +438,8 @@ public class DepotActivity extends AppCompatActivity {
         dcPopupWindow.setBackgroundDrawable(new BitmapDrawable());
         dcPopupWindow.setAnimationStyle(R.style.popwindow_dc_anim);
 
-        int popupWidth = dcPopupWindow.getWidth();
-        int popupHeight = dcPopupWindow.getHeight();
-        int width = currentView.getWidth();
-        int height = currentView.getHeight();
-        dcPopupWindow.showAsDropDown(currentView, (width - popupWidth) / 2, 0);
-//        dcPopupWindow.showAtLocation(view, Gravity.BOTTOM, 0 ,0);
+        int windowPos[] = ScreenUtils.calculatePopWindowPos(view, popupView);
+        dcPopupWindow.showAtLocation(view, Gravity.TOP | Gravity.START, windowPos[0], windowPos[1]);
     }
 
     public void onDcErase(View view) {
@@ -573,13 +570,15 @@ public class DepotActivity extends AppCompatActivity {
     public void onTurnoutClick(View view) {
         currentView = (TextView) view;
         View popupView = LayoutInflater.from(mContext).inflate(R.layout.dialog_dc_turnout, null);
-        popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT,
+        popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(1));
-        popupWindow.setAnimationStyle(R.style.popwindow_anim_style);
-        popupWindow.showAtLocation(view, Gravity.BOTTOM, 0 ,0);
+        popupWindow.setBackgroundDrawable(new ColorDrawable());
+        popupWindow.setAnimationStyle(R.style.popwindow_dc_anim);
+
+        int windowPos[] = ScreenUtils.calculatePopWindowPos(currentView, popupView);
+        popupWindow.showAtLocation(currentView, Gravity.TOP | Gravity.START, windowPos[0], windowPos[1]);
     }
     public void onDcAdd(View view) {
         popupWindow.dismiss();

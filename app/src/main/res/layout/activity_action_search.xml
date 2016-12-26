@@ -65,8 +65,8 @@
                     android:layout_weight="1"
                     android:layout_marginLeft="@dimen/button_left_margin"
                     android:layout_marginRight="@dimen/button_right_margin"
+                    android:text="@string/cancal_select"
                     style="@style/round_button_style"
-                    android:background="@drawable/round_button_shape"
                     android:onClick="onSelectCancle"/>
             </LinearLayout>
 

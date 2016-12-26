@@ -1,59 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:foreground="?attr/selectableItemBackground"
-    app:cardBackgroundColor="@color/colorWhite"
-    app:cardCornerRadius="5dp"
-    app:cardElevation="1dp"
+    android:foreground="@drawable/card_foreground_selector"
+    app:cardBackgroundColor="@color/colorLightBlue"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="5dp"
     app:cardMaxElevation="1dp"
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true"
     tools:context="com.sunland.signalinspect.DepotActivity">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorLightBlue">
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/dc_item_add"
-            android:textSize="@dimen/dc_item_title_size"
-            android:textColor="@color/colorWhite"
-            android:background="@color/colorCadeBlue"
-            android:onClick="onDcAdd"/>
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/button_top_margin"
-            android:layout_marginBottom="@dimen/button_bottom_margin"
-            android:background="@color/colorWhite"/>
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/dc_item_del"
-            android:textSize="@dimen/dc_item_title_size"
-            android:textColor="@color/colorWhite"
-            android:background="@color/colorCadeBlue"
-            android:onClick="onDcDel"/>
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/button_top_margin"
-            android:layout_marginBottom="@dimen/button_bottom_margin"
-            android:background="@color/colorWhite"/>
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/dc_item_modify"
-            android:textSize="@dimen/dc_item_title_size"
-            android:textColor="@color/colorWhite"
-            android:background="@color/colorCadeBlue"
-            android:onClick="onDcModify"/>
-    </LinearLayout>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dc_item_add"
+                    style="@style/list_round_button_style"
+                    android:onClick="onDcAdd"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorWhite"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dc_item_del"
+                    style="@style/list_round_button_style"
+                    android:onClick="onDcDel"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorWhite"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dc_item_modify"
+                    style="@style/list_round_button_style"
+                    android:onClick="onDcModify"/>
+        </LinearLayout>
 </android.support.v7.widget.CardView>

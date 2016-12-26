@@ -26,6 +26,8 @@
     <dimen name="button_left_margin">16dp</dimen>
     <dimen name="button_right_margin">16dp</dimen>
     <dimen name="button_top_margin">10dp</dimen>
+    <dimen name="view_divider_margin_top">5dp</dimen>
+    <dimen name="view_divider_margin_bottom">5dp</dimen>
     <dimen name="button_bottom_margin">10dp</dimen>
     <dimen name="list_item_height">48dp</dimen>
     <dimen name="thumb_width">48dp</dimen>
