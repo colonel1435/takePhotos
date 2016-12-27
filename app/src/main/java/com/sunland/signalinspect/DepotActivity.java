@@ -363,11 +363,13 @@ public class DepotActivity extends AppCompatActivity {
         Intent intent = new Intent(DepotActivity.this, showImageActivity.class);
         int[] location = new int[2];
         view.getLocationOnScreen(location);
+        int width = view.getWidth();
+        int height = view.getHeight();
         intent.putExtra("path", file);
         intent.putExtra("locationX", location[0]);
-        intent.putExtra("locationY", location[1]);
-        intent.putExtra("width", view.getWidth());
-        intent.putExtra("height", view.getHeight());
+        intent.putExtra("locationY", location[1] + height/2);
+        intent.putExtra("width", width);
+        intent.putExtra("height", height);
         startActivity(intent);
         overridePendingTransition(0, 0);
 
@@ -394,11 +396,13 @@ public class DepotActivity extends AppCompatActivity {
          Intent intent = new Intent(DepotActivity.this, showImageActivity.class);
         int[] location = new int[2];
         view.getLocationOnScreen(location);
+        int width = view.getWidth();
+        int height = view.getHeight();
         intent.putExtra("path", file);
         intent.putExtra("locationX", location[0]);
-        intent.putExtra("locationY", location[1]);
-        intent.putExtra("width", view.getWidth());
-        intent.putExtra("height", view.getHeight());
+        intent.putExtra("locationY", location[1]+height/2);
+        intent.putExtra("width", width);
+        intent.putExtra("height", height);
         startActivity(intent);
         overridePendingTransition(0, 0);
 
