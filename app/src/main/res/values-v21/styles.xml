@@ -4,6 +4,8 @@
         <item name="android:actionMenuTextAppearance">@style/MenuTextStyle</item>
     </style>
     <style name="AppTheme.NoActionBar">
+        <item name="windowActionBarOverlay">true</item>
+        <item name="windowActionModeOverlay">true</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>

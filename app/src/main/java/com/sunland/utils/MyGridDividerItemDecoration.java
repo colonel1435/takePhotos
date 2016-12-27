@@ -80,7 +80,7 @@ public class MyGridDividerItemDecoration extends RecyclerView.ItemDecoration {
             final int right = child.getRight() + params.rightMargin
                     + mDivider.getIntrinsicWidth();
             final int top = child.getBottom() + params.bottomMargin;
-            final int bottom = top + mDivider.getIntrinsicHeight();
+            final int bottom = top + mDividerHeight;
             if (mDivider != null) {
                 mDivider.setBounds(left, top, right, bottom);
                 mDivider.draw(c);
@@ -103,7 +103,7 @@ public class MyGridDividerItemDecoration extends RecyclerView.ItemDecoration {
             final int top = child.getTop() - params.topMargin;
             final int bottom = child.getBottom() + params.bottomMargin;
             final int left = child.getRight() + params.rightMargin;
-            final int right = left + mDivider.getIntrinsicWidth();
+            final int right = left + mDividerHeight;
             if (mDivider != null) {
                 mDivider.setBounds(left, top, right, bottom);
                 mDivider.draw(c);
@@ -120,7 +120,7 @@ public class MyGridDividerItemDecoration extends RecyclerView.ItemDecoration {
         RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager)
         {
-            if ((pos + 1) % spanCount == 0)// 如果是最后一列，则不需要绘制右边
+            if ((pos + 1) % spanCount == 0)// last col
             {
                 return true;
             }
@@ -151,7 +151,7 @@ public class MyGridDividerItemDecoration extends RecyclerView.ItemDecoration {
         if (layoutManager instanceof GridLayoutManager)
         {
             childCount = childCount - childCount % spanCount;
-            if (pos >= childCount)// 如果是最后一行，则不需要绘制底部
+            if (pos >= childCount)// last raw
                 return true;
         } else if (layoutManager instanceof StaggeredGridLayoutManager)
         {
@@ -183,18 +183,17 @@ public class MyGridDividerItemDecoration extends RecyclerView.ItemDecoration {
     {
         int spanCount = getSpanCount(parent);
         int childCount = parent.getAdapter().getItemCount();
-        outRect.set(0, 0, mDivider.getIntrinsicWidth(),
-                mDivider.getIntrinsicHeight());
-//        if (isLastRaw(parent, itemPosition, spanCount, childCount))// 如果是最后一行，则不需要绘制底部
+//        if (isLastRaw(parent, itemPosition, spanCount, childCount))// Last raw
 //        {
-//            outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
-//        } else if (isLastColum(parent, itemPosition, spanCount, childCount))// 如果是最后一列，则不需要绘制右边
+//            outRect.set(0, 0, mDividerHeight, 0);
+//        } else if (isLastColum(parent, itemPosition, spanCount, childCount))// last col
 //        {
-//            outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
-//        } else
-//        {
-//            outRect.set(0, 0, mDivider.getIntrinsicWidth(),
-//                    mDivider.getIntrinsicHeight());
+//            outRect.set(0, 0, 0, mDividerHeight);
 //        }
+//        else
+//        {
+//            outRect.set(0, 0, mDividerHeight, mDividerHeight);
+//        }
+        outRect.set(0, 0, mDividerHeight, mDividerHeight);
     }
 }
