@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.FloatMath;
@@ -49,7 +50,7 @@ public class SmoothImageView extends ImageView {
     /** Screen res */
     private DisplayMetrics dm;
     /** minimum scale ratio */
-    float minScaleR = 0.5f;
+    static final float MIN_SCALE = 0.5f;
     /** maximum scale ratio */
     static final float MAX_SCALE = 15f;
     /** init status */
@@ -138,11 +139,6 @@ public class SmoothImageView extends ImageView {
                         SmoothImageView.this.setScaleType(ScaleType.MATRIX);
                         if (mode == DRAG) {
                             matrix.set(savedMatrix);
-//                            float[] values=new float[9];
-//                            matrix.getValues(values);
-//                            float deltaX = getDelX(event.getX() - prev.x, bmp.getWidth(), values);
-//                            float deltaY = getDelY(event.getY() - prev.y, bmp.getHeight(), values);
-//                            matrix.postTranslate(deltaX, deltaY);
                             matrix.postTranslate(event.getX() - prev.x, event.getY() - prev.y);
                         } else if (mode == ZOOM) {
                             float newDist = spacing(event);
@@ -155,7 +151,7 @@ public class SmoothImageView extends ImageView {
                         break;
                 }
                 SmoothImageView.this.setImageMatrix(matrix);
-                CheckView(prev, event);
+                checkView(true, true);
                 return true;
             }
         });
@@ -221,49 +217,97 @@ public class SmoothImageView extends ImageView {
             deltaY = -(height*values[Matrix.MSCALE_Y]-height)-values[Matrix.MTRANS_Y];
         return deltaY;
     }
-    private void logicalBorder(PointF startPoint, MotionEvent event) {
-        Matrix m = new Matrix();
-        m.set(matrix);
-        RectF rect = new RectF(0, 0, bmp.getWidth(), bmp.getHeight());
-        m.mapRect(rect);
+    private void checkBorder(boolean horizontal, boolean vertical)
+    {
 
-        float height = rect.height();
-        float width = rect.width();
-        float deltaX, deltaY;
-        float dx = event.getX() - startPoint.x;
-        float dy = event.getY() - startPoint.y;
+        RectF rect = getMatrixRectF();
+        float deltaX = 0;
+        float deltaY = 0;
 
-        float[] values=new float[9];
-        matrix.getValues(values);
-        deltaX = getDelX(dx, width, values);
-        deltaY = getDelY(dy, height, values);
+        int width = getWidth();
+        int height = getHeight();
 
+//        Log.i(TAG, "WIDTH -> " + width + " HEIGHT -> " + height
+//                + " + rect.width() =  " + rect.width() + " , rect.height  ="
+//        + rect.height() + " top -> " + rect.top + ", Bottom -> " + rect.bottom
+//        + ", Left -> " + rect.left + ", Right -> " + rect.right);
+        if (horizontal) {
+            if (rect.width() >= width)
+            {
+                if (rect.left > 0)
+                {
+                    deltaX = -rect.left;
+                }
+                if (rect.right < width)
+                {
+                    deltaX = width - rect.right;
+                }
+            } else {
+                if (rect.left < 0) {
+                    deltaX = -rect.left;
+                }
+                if (rect.right > width) {
+                    deltaX = width - rect.right;
+                }
+            }
+        }
+        if (vertical) {
+            if (rect.height()  >= height)
+            {
+                if (rect.top > 0)
+                {
+                    deltaY = -rect.top;
+                }
+                if (rect.bottom < height)
+                {
+                    deltaY = height - rect.bottom;
+                }
+            } else {
+                if (rect.top <= 0) {
+                    deltaY = -rect.top;
+                }
+                if (rect.bottom >= height) {
+                    deltaY = height - rect.bottom;
+                }
+            }
+        }
         matrix.postTranslate(deltaX, deltaY);
+
     }
 
-    /**
-     * 限制最大最小缩放比例，自动居中
-     */
-    private void CheckView(PointF startPoint, MotionEvent event) {
+    private void checkView(boolean horizontal, boolean vertical) {
         float p[] = new float[9];
         matrix.getValues(p);
         if (mode == ZOOM) {
-            if (p[0] < minScaleR) {
-                //Log.d("", "当前缩放级别:"+p[0]+",最小缩放级别:"+minScaleR);
-                matrix.setScale(minScaleR, minScaleR);
+            if (p[0] < MIN_SCALE) {
+                matrix.setScale(MIN_SCALE, MIN_SCALE);
+                matrix.set(savedMatrix);
+                if (savedMatrix.isIdentity()) {
+                    center(true, true);
+                }
             }
             if (p[0] > MAX_SCALE) {
-                //Log.d("", "当前缩放级别:"+p[0]+",最大缩放级别:"+MAX_SCALE);
                 matrix.set(savedMatrix);
             }
-            center(true, true);
         }
         if (mode == DRAG) {
-//            logicalBorder(startPoint, event);
+            checkBorder(true, true);
         }
 
     }
 
+    private RectF getMatrixRectF()
+    {
+        Matrix rectMatrix = matrix;
+        RectF rect = new RectF();
+        Drawable d = getDrawable();
+        if (null != d)
+        {
+            rect.set(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+            rectMatrix.mapRect(rect);
+        }
+        return rect;
+    }
 
     /**
      * Distance of two point
