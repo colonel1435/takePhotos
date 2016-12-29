@@ -44,7 +44,7 @@ public class MyGridDividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state)
+    public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state)
     {
         drawHorizontal(c, parent);
         drawVertical(c, parent);
@@ -181,8 +181,8 @@ public class MyGridDividerItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, int itemPosition,
                                RecyclerView parent)
     {
-        int spanCount = getSpanCount(parent);
-        int childCount = parent.getAdapter().getItemCount();
+//        int spanCount = getSpanCount(parent);
+//        int childCount = parent.getAdapter().getItemCount();
 //        if (isLastRaw(parent, itemPosition, spanCount, childCount))// Last raw
 //        {
 //            outRect.set(0, 0, mDividerHeight, 0);
@@ -194,6 +194,5 @@ public class MyGridDividerItemDecoration extends RecyclerView.ItemDecoration {
 //        {
 //            outRect.set(0, 0, mDividerHeight, mDividerHeight);
 //        }
-        outRect.set(0, 0, mDividerHeight, mDividerHeight);
     }
 }

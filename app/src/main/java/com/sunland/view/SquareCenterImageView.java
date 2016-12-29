@@ -30,10 +30,6 @@ public class SquareCenterImageView extends ImageView {
     	
     	super.setImageBitmap(bm);
     }
-    
-    private void clipCenterImage(){
-    	
-    }
  
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -47,7 +43,6 @@ public class SquareCenterImageView extends ImageView {
         // Children are just made to fill our space.
         int childWidthSize = getMeasuredWidth();
         int childHeightSize = getMeasuredHeight();
-        //高度和宽度一样
         heightMeasureSpec = widthMeasureSpec = MeasureSpec.makeMeasureSpec(childWidthSize, MeasureSpec.EXACTLY);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
