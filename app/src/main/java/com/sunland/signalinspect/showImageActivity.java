@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -34,6 +35,8 @@ public class showImageActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         rawPhoto = getIntent().getStringExtra("path");
         mLocationX = getIntent().getIntExtra("locationX", 0);
         mLocationY = getIntent().getIntExtra("locationY", 0);

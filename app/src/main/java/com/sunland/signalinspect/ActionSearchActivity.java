@@ -173,8 +173,8 @@ public class ActionSearchActivity extends AppCompatActivity {
     private AdapterView.OnItemClickListener onHistoryItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            String item = mHistoryItems.get(position);
-
+            String item = mHistoryItems.get(position);
+            mSearchView.setQuery(item, false);
         }
     };
 

@@ -28,7 +28,8 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".ClipImageActivity" />
-        <activity android:name=".showImageActivity" />
+        <activity android:name=".showImageActivity"
+            android:theme="@style/ImageTheme.Transparent"/>
         <activity
             android:name=".ActionSearchActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -56,7 +57,7 @@
         </activity>
         <activity
             android:name=".DispalyImageActivity"
-            android:theme="@style/ImageTheme.Transparent"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/browse_photo_title">
         </activity>
     </application>
