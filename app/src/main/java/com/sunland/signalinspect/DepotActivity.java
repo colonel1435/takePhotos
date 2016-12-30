@@ -247,6 +247,8 @@ public class DepotActivity extends AppCompatActivity {
                     dcInfo.setSetThumb(setStatus);
                     String backStatus = sp.getString(dc+dcItem+getString(R.string.dc_back_position), "");
                     dcInfo.setBackThumb(backStatus);
+                    String outStatus = sp.getString(dc+dcItem+getString(R.string.dc_out_position), "");
+                    dcInfo.setOutThumb((outStatus));
 
                     itemList.add(dcInfo);
                 }
@@ -306,6 +308,16 @@ public class DepotActivity extends AppCompatActivity {
         String dc = view.getTag(R.id.btBackPositionContent).toString();
         currentButtonPosition = (int)view.getTag(R.id.btBackPositionIndex);
         fileName = createPhotoName(DC_PHOTO_TYPE, dc, getString(R.string.dc_back_position));
+        imgName = imgDir + fileName;
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(imgName)));
+        startActivityForResult(intent, TAKE_PHOTOS);
+    }
+
+    public void onBtOutPositionClick(View view) {
+        String dc = view.getTag(R.id.btOutPositionContent).toString();
+        currentButtonPosition = (int)view.getTag(R.id.btOutPositionIndex);
+        fileName = createPhotoName(DC_PHOTO_TYPE, dc, getString(R.string.dc_out_position));
         imgName = imgDir + fileName;
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(imgName)));
@@ -394,6 +406,40 @@ public class DepotActivity extends AppCompatActivity {
 //        startActivity(intent);
 
          Intent intent = new Intent(DepotActivity.this, showImageActivity.class);
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        int width = view.getWidth();
+        int height = view.getHeight();
+        intent.putExtra("path", file);
+        intent.putExtra("locationX", location[0]);
+        intent.putExtra("locationY", location[1]+height/2);
+        intent.putExtra("width", width);
+        intent.putExtra("height", height);
+        startActivity(intent);
+        overridePendingTransition(0, 0);
+//        overridePendingTransition(R.anim.zoom_out, R.anim.zoom_in);
+
+    }
+
+    public void onOutThumbClick(View view) {
+
+        String path = (String)view.getTag(R.id.ivOutPositionContent);
+        if (path.equals("")) {
+            Toast.makeText(mContext, getString(R.string.show_thumb_null), Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!new File(path).exists()) {
+            Toast.makeText(mContext, "文件不存在，请重新拍照！", Toast.LENGTH_LONG).show();
+            return;
+        }
+        String file = CustomUtils.delStr2End(path, ActionSearchActivity.THUMBNAIL_LABEL, "/");
+//        Uri uri = Uri.fromFile(new File(file));
+//        Intent intent = new Intent();
+//        intent.setAction(android.content.Intent.ACTION_VIEW);
+//        intent.setDataAndType(uri, "image/*");
+//        startActivity(intent);
+
+        Intent intent = new Intent(DepotActivity.this, showImageActivity.class);
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         int width = view.getWidth();
@@ -553,10 +599,14 @@ public class DepotActivity extends AppCompatActivity {
             dcItems.get(currentButtonPosition).setSetThumb(path);
             thumb = strItem + getString(R.string.dc_set_position);
             Log.i(TAG, "Update setposition -> " + thumb);
-        } else {
+        } else if(strStatus.equals(getString(R.string.dc_back_position))){
             dcItems.get(currentButtonPosition).setBackThumb(path);
             thumb = strItem + getString(R.string.dc_back_position);
             Log.i(TAG, "Update Backposition -> " + thumb);
+        } else {
+            dcItems.get(currentButtonPosition).setOutThumb(path);
+            thumb = strItem + getString(R.string.dc_out_position);
+            Log.i(TAG, "Update Outposition -> " + thumb);
         }
         editor.putString(thumb, path).commit();
 

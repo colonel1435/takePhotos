@@ -67,6 +67,7 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
         String dcItem = mListDatas.get(position).getItem();
         String dcSetThumb = mListDatas.get(position).getSetThumb();
         String dcBackThumb = mListDatas.get(position).getBackThumb();
+        String dcOutThumb = mListDatas.get(position).getOutThumb();
         Log.i(TAG, "Position -> " + position + " DC -> " + dc + " dcItem -> " + dcItem + " setThumb -> " + dcSetThumb + " backThumb -> " + dcBackThumb);
         holder.tvDcItem.setText(dcItem);
         SharedPreferences sp = mContext.getSharedPreferences(mDepot, Context.MODE_PRIVATE);
@@ -82,6 +83,12 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
             Glide.with(mContext).load(backThumb).crossFade().into(holder.ivBackThumb);
 //            holder.ivBackThumb.setImageBitmap(BitmapFactory.decodeFile(backThumb));
         }
+        String outThumb = sp.getString(dc+dcItem+mContext.getString(R.string.dc_out_position), "");
+        thumb = new File(outThumb);
+        if ((!outThumb.equals("") && thumb.exists())) {
+            Glide.with(mContext).load(outThumb).crossFade().into(holder.ivOutThumb);
+//            holder.ivBackThumb.setImageBitmap(BitmapFactory.decodeFile(backThumb));
+        }
 
         holder.tvDcItem.setTag(R.id.tvTurnoutPositionIndex, position);
         holder.tvDcItem.setTag(R.id.tvTurnoutParentContent, dc);
@@ -89,10 +96,15 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
         holder.ibSetPosition.setTag(R.id.btSetPositionContent, dc+dcItem);
         holder.ibBackPosition.setTag(R.id.btBackPositionIndex, position);
         holder.ibBackPosition.setTag(R.id.btBackPositionContent, dc+dcItem);
+        holder.ibOutPosition.setTag(R.id.btOutPositionContent, dc+dcItem);
+        holder.ibOutPosition.setTag(R.id.btOutPositionIndex, position);
+
         holder.ivSetThumb.setTag(R.id.ivSetPositionIndex, position);
         holder.ivSetThumb.setTag(R.id.ivSetPositionContent, dcSetThumb);
         holder.ivBackThumb.setTag(R.id.ivBackPositionIndex, position);
         holder.ivBackThumb.setTag(R.id.ivBackPositionContent, dcBackThumb);
+        holder.ivOutThumb.setTag(R.id.ivOutPositionIndex, position);
+        holder.ivOutThumb.setTag(R.id.ivOutPositionContent, dcOutThumb);
 
         /*
         if(mListener != null) {
@@ -137,16 +149,20 @@ public class MyDCTurnoutRecyclerAdapter extends RecyclerView.Adapter<MyDCTurnout
         private TextView tvDcItem;
         private ImageButton ibSetPosition;
         private ImageButton ibBackPosition;
+        private ImageButton ibOutPosition;
         private ImageView ivSetThumb;
         private ImageView ivBackThumb;
+        private ImageView ivOutThumb;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvDcItem = (TextView) itemView.findViewById(R.id.tv_dc_turnout_name);
             ibSetPosition = (ImageButton) itemView.findViewById(R.id.dc_set_position);
             ibBackPosition = (ImageButton) itemView.findViewById(R.id.dc_back_position);
+            ibOutPosition = (ImageButton) itemView.findViewById(R.id.dc_out_position);
             ivSetThumb = (ImageView) itemView.findViewById(R.id.iv_set_position_thumb);
             ivBackThumb = (ImageView) itemView.findViewById(R.id.iv_back_position_thumb);
+            ivOutThumb = (ImageView) itemView.findViewById(R.id.iv_out_position_thumb);
         }
         public void bindData(String item) {
             if (item != null) {

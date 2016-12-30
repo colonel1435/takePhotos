@@ -15,6 +15,7 @@
     <string name="dc_num_title">道岔总数: </string>
     <string name="dc_set_position">定位</string>
     <string name="dc_back_position">返位</string>
+    <string name="dc_out_position">状态</string>
     <string name="dc_take_photo">拍照</string>
     <string name="dc_preview">预览</string>
     <string name="dc_name_suffix">道岔</string>

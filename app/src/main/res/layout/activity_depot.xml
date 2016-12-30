@@ -61,7 +61,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
+                android:layout_weight="5"
                 android:orientation="vertical">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -88,6 +88,18 @@
                         android:text="@string/dc_back_position"
                         android:textSize="@dimen/dc_item_title_size"
                         android:textColor="@color/colorWhite"/>
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorLightGrey"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/dc_out_position"
+                        android:textSize="@dimen/dc_item_title_size"
+                        android:textColor="@color/colorWhite"/>
 
                 </LinearLayout>
                 <View
@@ -104,6 +116,35 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_gravity="center">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/dc_take_photo"
+                            android:textSize="@dimen/dc_item_title_size"
+                            android:textColor="@color/colorWhite"/>
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/colorLightGrey"/>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/dc_preview"
+                            android:textSize="@dimen/dc_item_title_size"
+                            android:textColor="@color/colorWhite"/>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorLightGrey"/>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"

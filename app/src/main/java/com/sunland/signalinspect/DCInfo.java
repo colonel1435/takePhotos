@@ -9,6 +9,7 @@ public class DCInfo {
     private String mItem;
     private String mSetThumb;
     private String mBackThumb;
+    private String mOutThumb;
 
     public DCInfo() {
     }
@@ -50,5 +51,13 @@ public class DCInfo {
 
     public String getBackThumb() {
         return mBackThumb;
+    }
+
+    public void setOutThumb(String thumb) {
+        mOutThumb = thumb;
+    }
+
+    public String getOutThumb() {
+        return mOutThumb;
     }
 }

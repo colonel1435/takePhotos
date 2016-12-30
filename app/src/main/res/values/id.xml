@@ -12,4 +12,9 @@
     <item type="id" name="ivSetPositionContent"></item>
     <item type="id" name="ivBackPositionContent"></item>
     <item type="id" name="ivBrowsePositionIndex"></item>
+    <item type="id" name="btOutPositionContent"></item>
+    <item type="id" name="ivOutPositionContent"></item>
+    <item type="id" name="btOutPositionIndex"></item>
+    <item type="id" name="ivOutPositionIndex"></item>
+
 </resources>
