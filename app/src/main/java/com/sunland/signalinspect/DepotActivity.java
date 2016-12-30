@@ -379,7 +379,7 @@ public class DepotActivity extends AppCompatActivity {
         int height = view.getHeight();
         intent.putExtra("path", file);
         intent.putExtra("locationX", location[0]);
-        intent.putExtra("locationY", location[1] + height/2);
+        intent.putExtra("locationY", location[1]);
         intent.putExtra("width", width);
         intent.putExtra("height", height);
         startActivity(intent);
@@ -412,7 +412,7 @@ public class DepotActivity extends AppCompatActivity {
         int height = view.getHeight();
         intent.putExtra("path", file);
         intent.putExtra("locationX", location[0]);
-        intent.putExtra("locationY", location[1] + height/2);
+        intent.putExtra("locationY", location[1]);
         intent.putExtra("width", width);
         intent.putExtra("height", height);
         startActivity(intent);
@@ -445,7 +445,7 @@ public class DepotActivity extends AppCompatActivity {
         int height = view.getHeight();
         intent.putExtra("path", file);
         intent.putExtra("locationX", location[0]);
-        intent.putExtra("locationY", location[1]+height/2);
+        intent.putExtra("locationY", location[1]);
         intent.putExtra("width", width);
         intent.putExtra("height", height);
         startActivity(intent);
