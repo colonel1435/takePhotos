@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -34,6 +36,9 @@ public class showImageActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         rawPhoto = getIntent().getStringExtra("path");
         mLocationX = getIntent().getIntExtra("locationX", 0);
         mLocationY = getIntent().getIntExtra("locationY", 0);
@@ -43,7 +48,7 @@ public class showImageActivity extends Activity {
         imageView = new SmoothImageView(this);
         imageView.setOriginalInfo(mWidth, mHeight, mLocationX, mLocationY);
         imageView.transformIn();
-        imageView.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
+        imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         setContentView(imageView);
 //        BitmapFactory.Options options = new BitmapFactory.Options();
@@ -64,6 +69,8 @@ public class showImageActivity extends Activity {
                 }
             }
         });
+//         finish();
+//         overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
         imageView.transformOut();
     }
 

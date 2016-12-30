@@ -405,19 +405,18 @@ public class DepotActivity extends AppCompatActivity {
 //        intent.setDataAndType(uri, "image/*");
 //        startActivity(intent);
 
-         Intent intent = new Intent(DepotActivity.this, showImageActivity.class);
+        Intent intent = new Intent(DepotActivity.this, showImageActivity.class);
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         int width = view.getWidth();
         int height = view.getHeight();
         intent.putExtra("path", file);
         intent.putExtra("locationX", location[0]);
-        intent.putExtra("locationY", location[1]+height/2);
+        intent.putExtra("locationY", location[1] + height/2);
         intent.putExtra("width", width);
         intent.putExtra("height", height);
         startActivity(intent);
         overridePendingTransition(0, 0);
-//        overridePendingTransition(R.anim.zoom_out, R.anim.zoom_in);
 
     }
 
